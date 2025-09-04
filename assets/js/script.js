@@ -272,11 +272,11 @@
         updateResultsHeaderForList();
         highlightActiveGroup();
 
+        // CHANGED: se elimina la clase "reveal" y los data-delay en las cards
         grid.innerHTML = list
-            .map((d, i) => {
-                const delay = 40 * i; // efecto "stagger"
+            .map((d) => {
                 return `
-          <article class="card reveal" role="listitem" data-id="${d.id}" data-delay="${delay}">
+          <article class="card" role="listitem" data-id="${d.id}">
             <div class="card__media">
               <img src="${d.img}" alt="${d.name}">
             </div>
@@ -295,8 +295,8 @@
         setResultsState('list');
         setBusy(false);
 
-        // ← activar reveal sobre las nuevas cards
-        window.__Reveal?.observe(grid);
+        // REMOVED: no activar reveal sobre las nuevas cards del catálogo
+        // window.__Reveal?.observe(grid);
     }
 
     // ---- Render detalle (estado DETALLE)
@@ -328,8 +328,9 @@
         let sheetHTML = '';
         if (item.infoSheet) {
             const isPDF = /\.pdf(\?|#|$)/i.test(item.infoSheet);
+            // CHANGED: sin clase "reveal" ni data-delay; visible solo cuando se pulse el botón
             sheetHTML = `
-    <div class="detail__sheet reveal" id="infoSheetBlock" hidden data-delay="100">
+    <div class="detail__sheet" id="infoSheetBlock" hidden>
       ${isPDF
                     ? `
           <iframe class="pdf-frame" src="${item.infoSheet}" title="Information sheet"></iframe>
@@ -342,7 +343,6 @@
     </div>`;
         }
 
-
         // Badges HTML
         const badgesHTML =
             Array.isArray(item.badges) && item.badges.length
@@ -351,9 +351,10 @@
            </div>`
                 : '';
 
+        // CHANGED: se eliminan todas las clases "reveal" del detalle
         detail.innerHTML = `
       <!-- Banner -->
-      <div class="detail__hero reveal" style="background-image:url('${item.img}')" data-delay="40">
+      <div class="detail__hero" style="background-image:url('${item.img}')">
         <div class="detail__hero-content">
           <h3 class="detail__title" id="detailTitle" tabindex="-1">${item.name}</h3>
           <div class="detail__meta">
@@ -365,12 +366,12 @@
 
       <!-- Cuerpo -->
       <div class="detail__body" role="region" aria-labelledby="detailTitle">
-        <div class="detail__main reveal" data-delay="100">
+        <div class="detail__main">
           <p class="detail__desc">${item.long || item.description || ''}</p>
           ${sheetHTML}
         </div>
 
-        <aside class="detail__aside reveal" data-delay="140">
+        <aside class="detail__aside">
           ${badgesHTML}
           ${item.address || mapsHref
                 ? `
@@ -409,9 +410,9 @@
                     sheetBlock.removeAttribute('hidden');
                     toggleBtn.textContent = 'Hide information sheet';
                     sheetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // Revelar el bloque si estaba oculto
-                    sheetBlock.classList.add('reveal');
-                    window.__Reveal?.observe(sheetBlock);
+                    // REMOVED: no se añade "reveal" ni se observa
+                    // sheetBlock.classList.add('reveal');
+                    // window.__Reveal?.observe(sheetBlock);
                 } else {
                     sheetBlock.setAttribute('hidden', '');
                     toggleBtn.textContent = 'View information sheet';
@@ -422,8 +423,8 @@
         setResultsState('detail');
         setBusy(false);
 
-        // ← activar reveal sobre el detalle recién renderizado
-        window.__Reveal?.observe(detail);
+        // REMOVED: no activar reveal sobre el detalle
+        // window.__Reveal?.observe(detail);
     }
 
     // -----------------------------------------------
@@ -542,6 +543,9 @@
             if (!res.ok) throw new Error(`Failed to load JSON (${res.status})`);
             destinations = await res.json();
 
+            // CHANGED: expone datos para el buscador del header
+            window.DESTINATIONS = destinations;
+
             renderCounts(destinations);
             renderCards(destinations);
 
@@ -553,6 +557,9 @@
             tryOpenFromHash();
             showState({ loading: false, empty: false, error: false });
             setBusy(false);
+
+            // Notificar a otros módulos que los datos están disponibles
+            window.dispatchEvent(new CustomEvent('data:loaded', { detail: destinations }));
         } catch (err) {
             console.error(err);
             showState({ loading: false, empty: false, error: true });
@@ -597,12 +604,10 @@
         if (!q) return data;
 
         return data.filter((d) => {
-            const title = norm(d.title || d.nombre);
-            const desc = norm(d.description || d.descripcion || d.summary || '');
-            const cat = norm(d.category || d.categoria || '');
-            const subcats = Array.isArray(d.subcategories || d.subcategorias)
-                ? (d.subcategories || d.subcategorias).map(norm).join(' ')
-                : '';
+            const title = norm(d.title || d.nombre || d.name);
+            const desc = norm(d.description || d.descripcion || d.summary || d.long || '');
+            const cat = norm(d.category || d.categoria || d.cat || '');
+            const subcats = norm(d.subcat || '');
             const tags = Array.isArray(d.tags) ? d.tags.map(norm).join(' ') : '';
             const city = norm(d.location?.city || d.ubicacion?.ciudad || '');
             const region = norm(d.location?.region || d.ubicacion?.region || '');
@@ -618,9 +623,9 @@
         if (!grid) return;
         grid.innerHTML = list
             .map((d) => {
-                const title = d.title || d.nombre || 'Untitled';
-                const img = (d.images && d.images[0]) || d.image || 'assets/img/placeholder.jpg';
-                const cat = d.category || d.categoria || '';
+                const title = d.title || d.nombre || d.name || 'Untitled';
+                const img = (d.images && d.images[0]) || d.image || d.img || 'assets/img/placeholder.jpg';
+                const cat = d.category || d.categoria || d.cat || '';
                 const city = d.location?.city || d.ubicacion?.ciudad || '';
                 const region = d.location?.region || d.ubicacion?.region || '';
                 const subtitle = [cat, city || region].filter(Boolean).join(' • ');
@@ -638,7 +643,6 @@
             })
             .join('');
     }
-
 
     const render = (list) => {
         if (typeof window.renderDestinations === 'function') {
