@@ -614,7 +614,7 @@
 
     // 4) Render (usa el tuyo si existe)
     function minimalRender(list) {
-        const grid = document.getElementById('destinationsGrid');
+        const grid = document.getElementById('cardsGrid'); // FIX: mismo ID que tu HTML
         if (!grid) return;
         grid.innerHTML = list
             .map((d) => {
@@ -638,6 +638,7 @@
             })
             .join('');
     }
+
 
     const render = (list) => {
         if (typeof window.renderDestinations === 'function') {
