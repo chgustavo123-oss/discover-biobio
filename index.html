@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!--Hoja de estilos-->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!--tipografias-->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="container header__wrap">
+
+            <!-- Izquierda: Logo -->
+            <a href="index.html" class="header__logo" aria-label="Inicio">
+                <img src="assets/img/logo-turismo-ingles.png" alt="Logo del sitio">
+            </a>
+
+            <!-- Centro: Buscador -->
+            <form class="header__search" role="search" aria-label="Buscar destinos turísticos">
+                <input type="search" name="q" id="search" placeholder="Search destinations, beaches, parks..."
+                    aria-label="Search destinations" />
+                <button type="submit" aria-label="Buscar">
+                    <img src="assets/img/iconos/search.svg" alt="" class="icon-search">
+                </button>
+            </form>
+
+
+            <!-- Derecha: Idioma + Tema -->
+            <div class="header__actions">
+
+                <!-- Idioma -->
+                <div class="dropdown lang-dropdown">
+                    <button class="dropdown__toggle" aria-label="Cambiar idioma">
+                        <img src="assets/img/iconos/lenguaje.svg" alt="" class="icon-lang">
+                    </button>
+                    <div class="dropdown__menu">
+                        <!-- Español deshabilitado (si prefieres ocultarlo, borra esta línea) -->
+                        <button type="button" class="dropdown__item" disabled aria-disabled="true">ES</button>
+
+                        <!-- Inglés activo (resaltado con CSS gracias a la clase is-active) -->
+                        <button type="button" class="dropdown__item is-active" aria-pressed="true">EN</button>
+                    </div>
+                </div>
+
+                <!-- Theme -->
+                <div class="dropdown theme-dropdown">
+                    <button class="dropdown__toggle" aria-label="Cambiar tema">Theme</button>
+                    <div class="dropdown__menu">
+                        <div class="theme-palette">
+                            <label for="theme-default" class="swatch">
+                                <span class="dot" style="--swatch:#009A96"></span>
+                                <span class="dot" style="--swatch:#FFB71B"></span>
+                                <small>Default</small>
+                            </label>
+                            <label for="theme-ocean" class="swatch">
+                                <span class="dot" style="--swatch:#0AA1DD"></span>
+                                <span class="dot" style="--swatch:#00D4FF"></span>
+                                <small>Ocean</small>
+                            </label>
+                            <label for="theme-coral" class="swatch">
+                                <span class="dot" style="--swatch:#FF6F61"></span>
+                                <span class="dot" style="--swatch:#FFD166"></span>
+                                <small>Coral</small>
+                            </label>
+                            <label for="theme-forest" class="swatch">
+                                <span class="dot" style="--swatch:#2E7D32"></span>
+                                <span class="dot" style="--swatch:#A5D6A7"></span>
+                                <small>Forest</small>
+                            </label>
+                            <label for="theme-royal" class="swatch">
+                                <span class="dot" style="--swatch:#6C63FF"></span>
+                                <span class="dot" style="--swatch:#FFD54F"></span>
+                                <small>Royal</small>
+                            </label>
+                            <label for="theme-grape" class="swatch">
+                                <span class="dot" style="--swatch:#7E57C2"></span>
+                                <span class="dot" style="--swatch:#F48FB1"></span>
+                                <small>Grape</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radios ocultos (para cambiar tema con CSS) -->
+                <div class="theme-radios">
+                    <input type="radio" name="theme" id="theme-default" checked>
+                    <input type="radio" name="theme" id="theme-ocean">
+                    <input type="radio" name="theme" id="theme-coral">
+                    <input type="radio" name="theme" id="theme-forest">
+                    <input type="radio" name="theme" id="theme-royal">
+                    <input type="radio" name="theme" id="theme-grape">
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- Intro / Splash -->
+    <div id="intro" aria-hidden="true">
+        <div class="intro__inner">
+            <h1 class="intro__title">
+                <span class="intro__line intro__line--discover">Discover</span>
+                <span class="intro__line intro__line--region">Región del Bio Bío</span>
+            </h1>
+            <p class="intro__byline">
+                by <img src="assets/img/logo-turismo-ingles.png" alt="Logo" class="intro__logo">
+            </p>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero reveal" aria-label="Main hero">
+        <div class="hero__overlay" aria-hidden="true"></div>
+        <div class="hero__content container">
+            <h1 class="hero__title">Discover Región del Biobío</h1>
+            <p class="hero__subtitle">
+                Explore the wonders of Biobío, at your own pace and in your own style, surrounded by  adventure
+            </p>
+        </div>
+    </section>
+
+
+
+    <!-- Catalog / Destinations -->
+    <section class="catalog reveal" aria-labelledby="catalog-title">
+        <div class="container catalog__wrap">
+
+            <!-- Sidebar de filtros -->
+            <aside class="filters" aria-label="Filters">
+                <h2 id="catalog-title" class="filters__title">Destinations</h2>
+                <p class="filters__subtitle">Select a category to get started</p>
+
+
+                <nav class="filters__groups" id="filtersGroups" aria-label="Categories">
+                    <!-- All -->
+                    <details class="filters__group" data-cat="all" open>
+                        <summary class="filters__group-summary">
+                            <button type="button" class="filters__catbtn">
+                                <span class="filters__group-name">
+                                    <img src="assets/img/iconos/world_map_color.svg" alt="" class="filters__icon"
+                                        aria-hidden="true">
+                                    All
+                                </span>
+                            </button>
+                            <button type="button" class="filters__expand" aria-label="Toggle subcategories"
+                                aria-expanded="true">
+                                <svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M8.12 9.29 12 13.17l3.88-3.88L17.3 10.7 12 16l-5.3-5.3 1.42-1.41z" />
+                                </svg>
+                            </button>
+                        </summary>
+                        <ul class="filters__subcats" role="list">
+                            <li>
+                                <button class="filters__chip" data-cat="all" aria-pressed="true">
+                                    All <span class="count" data-count="all">0</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </details>
+
+                    <!-- Natural Spaces -->
+                    <details class="filters__group" data-cat="nature">
+                        <summary class="filters__group-summary">
+                            <button type="button" class="filters__catbtn">
+                                <span class="filters__group-name">
+                                    <img src="assets/img/iconos/seedling_color.svg" alt="" class="filters__icon"
+                                        aria-hidden="true">
+                                    Natural Spaces
+                                </span>
+                            </button>
+                            <button type="button" class="filters__expand" aria-label="Toggle subcategories"
+                                aria-expanded="false">
+                                <svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M8.12 9.29 12 13.17l3.88-3.88L17.3 10.7 12 16l-5.3-5.3 1.42-1.41z" />
+                                </svg>
+                            </button>
+                        </summary>
+                        <ul class="filters__subcats" role="list">
+                            <li><button class="filters__chip" data-cat="nature" data-subcat="parks"
+                                    aria-pressed="false">Parks <span class="count"
+                                        data-count="nature:parks">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="nature" data-subcat="mountains"
+                                    aria-pressed="false">Mountains <span class="count"
+                                        data-count="nature:mountains">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="nature" data-subcat="lagoons"
+                                    aria-pressed="false">Lagoons <span class="count"
+                                        data-count="nature:lagoons">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="nature" data-subcat="beaches-coast"
+                                    aria-pressed="false">Beaches & Coast <span class="count"
+                                        data-count="nature:beaches-coast">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="nature" data-subcat="viewpoints"
+                                    aria-pressed="false">Viewpoints <span class="count"
+                                        data-count="nature:viewpoints">0</span></button></li>
+                        </ul>
+                    </details>
+
+                    <!-- Heritage -->
+                    <details class="filters__group" data-cat="heritage">
+                        <summary class="filters__group-summary">
+                            <button type="button" class="filters__catbtn">
+                                <span class="filters__group-name">
+                                    <img src="assets/img/iconos/classical_building_color.svg" alt=""
+                                        class="filters__icon" aria-hidden="true">
+                                    Heritage
+                                </span>
+                            </button>
+                            <button type="button" class="filters__expand" aria-label="Toggle subcategories"
+                                aria-expanded="false">
+                                <svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M8.12 9.29 12 13.17l3.88-3.88L17.3 10.7 12 16l-5.3-5.3 1.42-1.41z" />
+                                </svg>
+                            </button>
+                        </summary>
+                        <ul class="filters__subcats" role="list">
+                            <li><button class="filters__chip" data-cat="heritage" data-subcat="buildings"
+                                    aria-pressed="false">Buildings <span class="count"
+                                        data-count="heritage:buildings">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="heritage" data-subcat="squares"
+                                    aria-pressed="false">Squares <span class="count"
+                                        data-count="heritage:squares">0</span></button></li>
+                        </ul>
+                    </details>
+
+                    <!-- Culture -->
+                    <details class="filters__group" data-cat="culture">
+                        <summary class="filters__group-summary">
+                            <button type="button" class="filters__catbtn">
+                                <span class="filters__group-name">
+                                    <img src="assets/img/iconos/artist_palette_color.svg" alt="" class="filters__icon"
+                                        aria-hidden="true">
+                                    Culture
+                                </span>
+                            </button>
+                            <button type="button" class="filters__expand" aria-label="Toggle subcategories"
+                                aria-expanded="false">
+                                <svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M8.12 9.29 12 13.17l3.88-3.88L17.3 10.7 12 16l-5.3-5.3 1.42-1.41z" />
+                                </svg>
+                            </button>
+                        </summary>
+                        <ul class="filters__subcats" role="list">
+                            <li><button class="filters__chip" data-cat="culture" data-subcat="museums"
+                                    aria-pressed="false">Museums <span class="count"
+                                        data-count="culture:museums">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="culture" data-subcat="market"
+                                    aria-pressed="false">Market <span class="count"
+                                        data-count="culture:market">0</span></button></li>
+                        </ul>
+                    </details>
+
+                    <!-- Gastronomy -->
+                    <details class="filters__group" data-cat="gastronomy">
+                        <summary class="filters__group-summary">
+                            <button type="button" class="filters__catbtn">
+                                <span class="filters__group-name">
+                                    <img src="assets/img/iconos/fork_and_knife_with_plate_color.svg" alt=""
+                                        class="filters__icon" aria-hidden="true">
+                                    Gastronomy
+                                </span>
+                            </button>
+                            <button type="button" class="filters__expand" aria-label="Toggle subcategories"
+                                aria-expanded="false">
+                                <svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M8.12 9.29 12 13.17l3.88-3.88L17.3 10.7 12 16l-5.3-5.3 1.42-1.41z" />
+                                </svg>
+                            </button>
+                        </summary>
+                        <ul class="filters__subcats" role="list">
+                            <li><button class="filters__chip" data-cat="gastronomy" data-subcat="cafes"
+                                    aria-pressed="false">Cafés <span class="count"
+                                        data-count="gastronomy:cafes">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="gastronomy" data-subcat="restaurants"
+                                    aria-pressed="false">Restaurants <span class="count"
+                                        data-count="gastronomy:restaurants">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="gastronomy" data-subcat="bars"
+                                    aria-pressed="false">Bars <span class="count"
+                                        data-count="gastronomy:bars">0</span></button></li>
+                        </ul>
+                    </details>
+
+                    <!-- Urban -->
+                    <details class="filters__group" data-cat="urban">
+                        <summary class="filters__group-summary">
+                            <button type="button" class="filters__catbtn">
+                                <span class="filters__group-name">
+                                    <img src="assets/img/iconos/cityscape_color.svg" alt="" class="filters__icon"
+                                        aria-hidden="true">
+                                    Urban
+                                </span>
+                            </button>
+                            <button type="button" class="filters__expand" aria-label="Toggle subcategories"
+                                aria-expanded="false">
+                                <svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M8.12 9.29 12 13.17l3.88-3.88L17.3 10.7 12 16l-5.3-5.3 1.42-1.41z" />
+                                </svg>
+                            </button>
+                        </summary>
+                        <ul class="filters__subcats" role="list">
+                            <li><button class="filters__chip" data-cat="urban" data-subcat="spaces"
+                                    aria-pressed="false">Spaces <span class="count"
+                                        data-count="urban:spaces">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="urban" data-subcat="squares"
+                                    aria-pressed="false">Squares <span class="count"
+                                        data-count="urban:squares">0</span></button></li>
+                            <li><button class="filters__chip" data-cat="urban" data-subcat="shopping"
+                                    aria-pressed="false">Shopping <span class="count"
+                                        data-count="urban:shopping">0</span></button></li>
+                        </ul>
+                    </details>
+                </nav>
+
+
+
+
+                <button class="filters__reset" id="filtersReset" type="button">Clear filters</button>
+            </aside>
+
+            <!-- Resultados -->
+            <div class="results" aria-live="polite" aria-busy="false">
+                <div class="results__state results__state--loading" hidden>Loading destinations…</div>
+                <div class="results__state results__state--empty" hidden>No results for current filters.</div>
+                <div class="results__state results__state--error" hidden>There was a problem loading data.</div>
+
+                <div class="results__header">
+                    <h2 class="results__title">All Destinations</h2>
+                    <p class="results__subtitle">Showing all destinations available</p>
+                </div>
+
+
+                <!-- Vista de cards -->
+                <div class="cards" id="cardsGrid" role="list"></div>
+
+                <!-- Vista de detalle (se inyecta por JS) -->
+                <div class="detail" id="detailView" hidden></div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- BANNER: Créditos / Reconocimiento -->
+    <section id="banner-creditos" class="banner-bleed banner-creditos reveal" data-delay="120"
+        aria-label="Créditos del proyecto">
+        <!-- Enlace que cubre todo el banner -->
+        <a class="banner-creditos__link" href="readme.html" aria-label="Leer créditos y notas de diseño del proyecto">
+            <div class="banner-creditos__bg" role="img" aria-label="Vista panorámica de Concepción, Chile"></div>
+
+            <div class="banner-creditos__content container">
+                <div class="banner-creditos__text">
+                    <h2 class="banner-creditos__title">A Project Built in Community</h2>
+                    <p class="banner-creditos__subtitle">
+                        This website is the result of the joint effort of students, faculty, and the Department of
+                        English of the School of Tourism at DUOC UC.
+                    </p>
+                    <p class="banner-creditos__paragraph">
+                        More than just an academic project, it represents our commitment to the sustainable development
+                        of tourism in the Bío Bío Region and to sharing its cultural and natural richness with the
+                        world.
+                    </p>
+                </div>
+
+                <div class="banner-creditos__logo">
+                    <img src="assets/img/logo-turismo-ingles.png" alt="Logo: Turismo e Inglés DUOC UC" loading="lazy"
+                        decoding="async">
+                </div>
+            </div>
+        </a>
+    </section>
+
+    <!-- BANNER: Rally Biobío (Parallax 3 capas) -->
+    <section id="banner-rally" class="banner-bleed reveal" data-delay="160"
+        aria-label="Rally Chile Bio Bío — próximamente">
+
+        <a class="parallax-banner__link" href="https://www.rallymobil.cl/" target="_blank" rel="noopener"
+            aria-label="Ir a RallyMobil.cl (se abre en nueva pestaña)">
+
+            <div class="parallax-banner">
+                <!-- Capa 3: Fondo -->
+                <img class="parallax-banner__layer layer--bg" src="assets/img/banner-rally-fondo.png"
+                    alt="Fondo de piso y cielo del Rally Biobío" loading="lazy" decoding="async">
+
+                <!-- Capa 2: Auto -->
+                <img class="parallax-banner__layer layer--mid" src="assets/img/banner-rally-auto.png"
+                    alt="Auto de Rally" loading="lazy" decoding="async">
+
+                <!-- Capa 1: Contenido (texto + logo) -->
+                <img class="parallax-banner__layer layer--fg" src="assets/img/banner-rally-contenido.png"
+                    alt="Rally Chile Biobío — The best pilots, on the best roads in the world." loading="lazy"
+                    decoding="async">
+            </div>
+        </a>
+    </section>
+
+
+
+
+
+
+    <!-- =========================
+     FOOTER
+========================= -->
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div class="site-footer__brand">
+                <a href="/" class="site-footer__logo">Discover Bio Bío</a>
+                <p class="site-footer__tag">Explora naturaleza, cultura y sabores del Biobío.</p>
+            </div>
+
+            <nav class="site-footer__nav" aria-label="Footer">
+                <a href="#top">Inicio</a>
+                <a href="#catalogo">Destinos</a>
+                <a href="#banner-rally">Rally Biobío</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+
+            <div class="site-footer__meta">
+                <p>© <span id="yearNow">2025</span> Discover Bio Bío. Todos los derechos reservados.</p>
+                <p class="site-footer__credits">
+                    Sitio desarrollado con apoyo de la Escuela de Turismo y el Departamento de Inglés.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Script -->
+    <script src="assets/js/script.js"></script>
+
+    <script>
+        /* ===== Reveal universal ===== */
+        (() => {
+            const SEL = '.reveal';
+            let io;
+
+            function ensureObserver() {
+                if (!('IntersectionObserver' in window)) return null;
+                if (!io) {
+                    io = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                const el = entry.target;
+                                const delay = Number(el.getAttribute('data-delay') || 0);
+                                setTimeout(() => el.classList.add('revealed'), delay);
+                                io.unobserve(el);
+                            }
+                        });
+                    }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+                }
+                return io;
+            }
+
+            function observeNew() {
+                const els = Array.from(document.querySelectorAll(SEL))
+                    .filter(el => !el.dataset.revealReady);
+
+                if (!els.length) return;
+
+                if (!('IntersectionObserver' in window)) {
+                    els.forEach(el => {
+                        el.classList.add('revealed');
+                        el.dataset.revealReady = '1';
+                    });
+                    return;
+                }
+
+                const obs = ensureObserver();
+                els.forEach(el => {
+                    el.dataset.revealReady = '1';
+                    obs.observe(el);
+                });
+            }
+
+            // Inicializar al cargar
+            document.addEventListener('DOMContentLoaded', observeNew, { once: true });
+            window.addEventListener('load', observeNew);
+
+            // Observar nuevos nodos que aparezcan dinámicamente
+            const mo = new MutationObserver(() => observeNew());
+            mo.observe(document.documentElement, { childList: true, subtree: true });
+        })();
+    </script>
+
+
+
+</body>
+
+</html>
