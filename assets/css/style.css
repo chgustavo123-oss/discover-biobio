@@ -1852,7 +1852,7 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
 
 /* ===== Reveal (fade-in al hacer scroll) ===== */
 .reveal {
-    opacity: 0;
+    opacity: 100;
     transform: translateY(20px);
     transition: opacity .7s ease, transform .7s ease;
     will-change: opacity, transform;
