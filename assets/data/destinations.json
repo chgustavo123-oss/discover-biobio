@@ -595,7 +595,7 @@
         "subcat": "museums",
         "img": "assets/img/destinations/universidad-concepcion.avif",
         "description": "Historic campus with monuments, sculptures, and the iconic Campanile.",
-        "long": "The campus is truly an experience to explore, where history coexists with daily university life. The central axis was declared a National Monument because it brings together many sculptures, like the Fountain in tribute “To the spirit of the Founders” or the iconic Whale outside the school of natural and oceanographic sciences. The Campanile is an important symbol for the students.",
+        "long": "The campus is truly an experience to explore, where history coexists with daily university life. The central axis was declared a National Monument because it brings together many sculptures, like the Fountain in tribute \"To the spirit of the Founders\" or the iconic Whale outside the school of natural and oceanographic sciences. The Campanile is an important symbol for the students.",
         "badges": [
             "National monument",
             "Sculptures",
@@ -616,7 +616,7 @@
         "subcat": "museums",
         "img": "assets/img/destinations/pinacoteca.avif",
         "description": "One of Chile’s most important art collections, featuring 'Presencia de América Latina'.",
-        "long": "In a quest to capture the culture of the country’s art, \"La Casa del Arte\" was founded. It opened in 1965 and today it has almost 2500 works of art, one of the most important collections of Chilean painting. In the main hall you will be welcomed with the mural “Presencia de América Latina” (Latin American Presence) that with 250m2 values the union of the Americans throughout the history.",
+        "long": "In a quest to capture the culture of the country’s art, \"La Casa del Arte\" was founded. It opened in 1965 and today it has almost 2500 works of art, one of the most important collections of Chilean painting. In the main hall you will be welcomed with the mural \"Presencia de América Latina\" (Latin American Presence) that with 250m2 values the union of the Americans throughout the history.",
         "badges": [
             "Chilean art",
             "Mural",
@@ -636,7 +636,7 @@
         "subcat": "market",
         "img": "assets/img/destinations/mercado-talcahuano.avif",
         "description": "Lively market born after the 2010 earthquake, famous for fresh seafood and cocinerías.",
-        "long": "It emerged after the devastating 2010 earthquake and tsunami, stands as a symbol of local resilience and a must-visit. This lively market, operating from early morning (approx. 7:00 AM - 6:00 PM), offers the freshest fish and seafood directly from the bay. Its famous \"cocinerías\" (eateries) serve traditional delights like paila marina (seafood stew) and caldillo de congrio (conger eel soup) at very accessible prices, providing an authentic immersion into the port's vibrant culinary spirit and daily life.",
+        "long": "It emerged after the devastating 2010 earthquake and tsunami and stands as a symbol of local resilience and a must-visit. This lively market, operating from early morning (approx. 7:00 AM - 6:00 PM), offers the freshest fish and seafood directly from the bay. Its famous \"cocinerías\" (eateries) serve traditional delights like paila marina (seafood stew) and caldillo de congrio (conger eel soup) at accessible prices, providing an authentic immersion into the port's vibrant culinary spirit and daily life.",
         "badges": [
             "Seafood",
             "Local market",
@@ -697,7 +697,7 @@
         "subcat": "restaurants",
         "img": "assets/img/destinations/la-cocina.avif",
         "description": "Restobar near Plaza Perú, known for mojitos, diverse menu and relaxed atmosphere.",
-        "long": "Located at Avenida Paicaví 246, near Plaza Perú, Cocina Restobar is known for its mojitos, relaxed atmosphere, and diverse menu. It opens daily from 8:30 to 24:00 (until 2:00 on weekends), it is ideal for groups and adults. It admits pets, has outdoor tables, delivery service and wheelchair access. Prices are affordable and some of the staff speak English. For safety reasons, the use of cabs or shared vehicles at night is recommended.",
+        "long": "Located at Avenida Paicaví 246, near Plaza Perú, Cocina Restobar is known for its mojitos, relaxed atmosphere, and diverse menu. It opens daily from 8:30 to 24:00 (until 2:00 on weekends). It is ideal for groups and adults, admits pets, has outdoor tables, delivery service and wheelchair access. Prices are affordable and some of the staff speak English. For safety reasons, the use of cabs or shared vehicles at night is recommended.",
         "badges": [
             "Mojitos",
             "Groups",
@@ -859,7 +859,7 @@
         "subcat": "bars",
         "img": "assets/img/destinations/bar-concepcion.avif",
         "description": "Craft beer and cocktails bar with live music and outdoor seating.",
-        "long": "Located at Av. Chacabuco 1224, This bar offers a vibrant atmosphere with a wide selection of local craft beers, cocktails, and hearty dishes. Open daily from 12:30 PM, it caters to both casual gatherings and lively nights out. The area features indoor and outdoor seating, live music events, and a friendly, inclusive environment. Reservations are recommended on weekends. For more details, visit barconcepcion.cl",
+        "long": "Located at Av. Chacabuco 1224, this bar offers a vibrant atmosphere with a wide selection of local craft beers, cocktails, and hearty dishes. Open daily from 12:30 PM, it caters to both casual gatherings and lively nights out. The area features indoor and outdoor seating, live music events, and a friendly, inclusive environment. Reservations are recommended on weekends. For more details, visit barconcepcion.cl",
         "badges": [
             "Craft beer",
             "Cocktails",
