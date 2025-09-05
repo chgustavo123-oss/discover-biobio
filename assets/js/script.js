@@ -918,3 +918,39 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('load', update);
 })();
+
+async function loadData() {
+    try {
+        showState({ loading: true, empty: false, error: false });
+        setBusy(true);
+
+        const res = await fetch('assets/data/destinations.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`Failed to load JSON (${res.status})`);
+
+        const text = await res.text();
+        try {
+            destinations = JSON.parse(text);
+        } catch (e) {
+            console.error('JSON inválido:', e);
+            // Muestra un extracto alrededor del punto del error si existe e.position
+            const pos = e.position ?? (e.message.match(/position (\d+)/)?.[1] | 0);
+            console.error('Cerca de:', text.slice(Math.max(0, pos - 80), pos + 80));
+            throw e;
+        }
+
+        renderCounts(destinations);
+        renderCards(destinations);
+
+        document.querySelectorAll('.filters__group').forEach(g => {
+            g.querySelector('.filters__expand')?.setAttribute('aria-expanded', g.open ? 'true' : 'false');
+        });
+
+        tryOpenFromHash();
+        showState({ loading: false, empty: false, error: false });
+    } catch (err) {
+        console.error(err);
+        showState({ loading: false, empty: false, error: true });
+    } finally {
+        setBusy(false);
+    }
+}
