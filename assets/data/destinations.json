@@ -257,6 +257,50 @@
         "infoSheet": "assets/sheets/lagoons.pdf"
     },
     {
+        "id": "laguna-redonda",
+        "name": "Laguna Redonda",
+        "cat": "nature",
+        "subcat": "lagoons",
+        "img": "assets/img/destinations/laguna-redonda.avif",
+        "description": "Deepest lagoon in Concepción, popular for walking, jogging and family events.",
+        "long": "It is a lagoon of tectonic origin, formed by a ground collapse approximately 7,000 years ago. It is the deepest lagoon in Concepción, measuring 19 meters deep. It is located in the Lorenzo Arenas neighborhood, near the road to Talcahuano. Around the lagoon, you can find trees such as willows and waterfowl.\n\nIt is a popular place for recreational activities such as walking, hiking, jogging, and enjoying nature. It has trails for walking and running, green areas for picnics and games for children.\n\nOccasionally, family events such as children's shows, live music, and craft fairs are held. In addition, there is a nearby cafeteria \"Dolce Laguna\" to enjoy from Tuesday to Saturday from 2:00 p.m. to 9:00 p.m.",
+        "badges": [
+            "Trails",
+            "Picnic areas",
+            "Jogging",
+            "Family events",
+            "Cafeteria"
+        ],
+        "address": "Barrio Lorenzo Arenas, Concepción",
+        "coords": [
+            -36.799,
+            -73.071
+        ],
+        "infoSheet": "assets/sheets/lagoons.pdf"
+    },
+    {
+        "id": "laguna-tres-pascualas",
+        "name": "Laguna de las Tres Pascualas",
+        "cat": "nature",
+        "subcat": "lagoons",
+        "img": "assets/img/destinations/laguna-tres-pascualas.avif",
+        "description": "Urban lagoon in central Concepción, linked to the legend of the Three Pascualas.",
+        "long": "Is an urban landmark and natural heritage of the city. It is located in the center of Concepción, between Lientur, Paicaví, Janequeo and Roosevelt Avenue streets. In the middle you can see the University San Sebastian.\n\nIt's a peaceful space with green areas and trails, ideal for strolling and enjoying nature with children and adults. It also has a restaurant and bar next to the lagoon offering family-friendly options.\n\nThe legend of the Three Pascualas is a traditional Chilean story, originating in Concepción, that tells the tale of three sisters who used to wash clothes in a lagoon. A stranger arrives, falls in love with the three, and on one fateful night, invites them to the lagoon, where they all drown, believing themselves chosen. Since then, it is said that their wails can be heard at night.",
+        "badges": [
+            "Urban park",
+            "Trails",
+            "Family friendly",
+            "Restaurant & bar",
+            "Legend site"
+        ],
+        "address": "Av. Roosevelt, Concepción",
+        "coords": [
+            -36.826,
+            -73.039
+        ],
+        "infoSheet": "assets/sheets/lagoons.pdf"
+    },
+    {
         "id": "laguna-grande",
         "name": "Laguna Grande",
         "cat": "nature",
@@ -710,408 +754,5 @@
             -73.039
         ],
         "infoSheet": "assets/sheets/night-life.pdf"
-    },
-    {
-        "id": "inati-burger",
-        "name": "Inati Burger",
-        "cat": "gastronomy",
-        "subcat": "restaurants",
-        "img": "assets/img/destinations/inati-burger.avif",
-        "description": "Burger house with daily specials, shakes and fries promotions.",
-        "long": "This restaurant specializes in burgers, offering a daily special burger for just $3,990. They have amazing promotions purveying their burgers, milkshakes and topped french fries, also the eatery features a spacious place, and excellent customer service.",
-        "badges": [
-            "Burgers",
-            "Promotions",
-            "Milkshakes"
-        ],
-        "address": "Centro de Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": "assets/sheets/gastronomia.pdf"
-    },
-    {
-        "id": "sumo-sushi",
-        "name": "Sumo Sushi",
-        "cat": "gastronomy",
-        "subcat": "restaurants",
-        "img": "assets/img/destinations/sumo-sushi.avif",
-        "description": "Sushi restaurant offering rolls, ceviche, gohan and sushiburgers.",
-        "long": "This sushi-focused restaurant offers a variety of dishes such as gohan, ceviche, sushiburgers, and also serves platters of French fries, among others.",
-        "badges": [
-            "Sushi",
-            "Gohan",
-            "Ceviche"
-        ],
-        "address": "Concepción",
-        "coords": [
-            -36.828,
-            -73.049
-        ],
-        "infoSheet": "assets/sheets/gastronomia.pdf"
-    },
-    {
-        "id": "cafe-neruda",
-        "name": "Café Neruda",
-        "cat": "gastronomy",
-        "subcat": "restaurants",
-        "img": "assets/img/destinations/cafe-neruda.avif",
-        "description": "Restaurant with Chilean dishes, vegetarian options and traditional drinks.",
-        "long": "Café Neruda is an amazing place to try new things, especially traditional Chilean food. They offer all kinds of drinks and dishes, including homemade meals and vegetarian options. Among the most popular drinks is borgoña which is made of red wine, strawberries and sugar, and for food, the sopaipillas are people’s favorite.",
-        "badges": [
-            "Chilean food",
-            "Vegetarian options",
-            "Borgoña"
-        ],
-        "address": "Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": "assets/sheets/gastronomia.pdf"
-    },
-    {
-        "id": "bar-margarita",
-        "name": "Bar Margarita",
-        "cat": "gastronomy",
-        "subcat": "bars",
-        "img": "assets/img/destinations/bar-margarita.png",
-        "description": "Bar with daily promotions, fast food and a friendly atmosphere.",
-        "long": "Margarita Bar is a restaurant that offers all kinds of drinks and meals, especially fast food. Every day, they feature special promotions on different drinks and dishes. Nice food go with a welcoming ambience and kind customer service.",
-        "badges": [
-            "Fast food",
-            "Promotions",
-            "Drinks"
-        ],
-        "address": "Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": "assets/sheets/gastronomia.pdf"
-    },
-    {
-        "id": "sky-bar",
-        "name": "Sky Bar",
-        "cat": "gastronomy",
-        "subcat": "bars",
-        "img": "assets/img/destinations/sky-bar.avif",
-        "description": "20th floor bar with panoramic views, Peruvian fusion cuisine and cocktails.",
-        "long": "Located at Barros Arana 1098, 20th floor, Torre del Centro. Open daily from 12:30 PM to midnight, until 3:00 AM on weekends. Offers panoramic city views, Peruvian-fusion cuisine, and signature cocktails like Pisco Punch. Suitable for adults and groups. Smart casual dress code recommended. Indoor and terrace seating available. Wheelchair accessible. Reservations advised. Easily reachable by public transport or taxi. Not recommended for young children.",
-        "badges": [
-            "Panoramic views",
-            "Cocktails",
-            "Peruvian fusion",
-            "Terrace"
-        ],
-        "address": "Barros Arana 1098, Torre del Centro, Concepción",
-        "coords": [
-            -36.828,
-            -73.049
-        ],
-        "infoSheet": "assets/sheets/night-life.pdf"
-    },
-    {
-        "id": "travesia",
-        "name": "Travesía",
-        "cat": "gastronomy",
-        "subcat": "bars",
-        "img": "assets/img/destinations/travesia.png",
-        "description": "Rustic bar with pizzas, sandwiches, tapas and generous portions.",
-        "long": "Located at Ramon Carrasco 256. Open Monday to Thursday from 12:30 to 1:00 hrs, Friday and Saturday until 01:30 hrs. It offers a regionalist menu with sandwiches, pizzas, hamburgers, tapas and a wide variety of drinks. It is characterized by its generous portions and its rustic and cozy atmosphere. Ideal for adults and groups. It has indoor and outdoor tables, accepts credit cards and offers take-out and delivery services. Reservations recommended, especially on weekends. Not suitable for small children.",
-        "badges": [
-            "Pizzas",
-            "Tapas",
-            "Generous portions"
-        ],
-        "address": "Ramon Carrasco 256, Concepción",
-        "coords": [
-            -36.827,
-            -73.049
-        ],
-        "infoSheet": "assets/sheets/night-life.pdf"
-    },
-    {
-        "id": "bodeguita-nicanor",
-        "name": "La Bodeguita de Nicanor",
-        "cat": "gastronomy",
-        "subcat": "bars",
-        "img": "assets/img/destinations/bodeguita-nicanor.avif",
-        "description": "Nightlife locale with live music, cultural events and Chilean drinks.",
-        "long": "Located at Aníbal Pinto 1661, is a popular nightlife locale in Concepción known for its traditional Chilean drinks like terremoto and piscolas, as well for its beers and snacks. It operates from Tuesday to Thursday, 9:00 PM to 4:00 AM, and Friday to Saturday until 5:00 AM. The place features live music and cultural events, including Cueca performances, creating a lively atmosphere. The space is accessible. It is recommended to arrive early on weekends, and parking is available nearby.",
-        "badges": [
-            "Live music",
-            "Cultural events",
-            "Terremoto drink"
-        ],
-        "address": "Aníbal Pinto 1661, Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": "assets/sheets/night-life.pdf"
-    },
-    {
-        "id": "bar-concepcion",
-        "name": "Bar Concepción",
-        "cat": "gastronomy",
-        "subcat": "bars",
-        "img": "assets/img/destinations/bar-concepcion.avif",
-        "description": "Craft beer and cocktails bar with live music and outdoor seating.",
-        "long": "Located at Av. Chacabuco 1224, this bar offers a vibrant atmosphere with a wide selection of local craft beers, cocktails, and hearty dishes. Open daily from 12:30 PM, it caters to both casual gatherings and lively nights out. The area features indoor and outdoor seating, live music events, and a friendly, inclusive environment. Reservations are recommended on weekends. For more details, visit barconcepcion.cl",
-        "badges": [
-            "Craft beer",
-            "Cocktails",
-            "Live music"
-        ],
-        "address": "Av. Chacabuco 1224, Concepción",
-        "coords": [
-            -36.827,
-            -73.035
-        ],
-        "infoSheet": "assets/sheets/night-life.pdf"
-    },
-    {
-        "id": "soberbio-bar",
-        "name": "Soberbio",
-        "cat": "gastronomy",
-        "subcat": "bars",
-        "img": "assets/img/destinations/soberbio.avif",
-        "description": "Talcahuano bar with live music, karaoke nights and vibrant nightlife.",
-        "long": "Located at Ifarle Oriente 6701, Talcahuano, near to Casino Marina del Sol, Soberbio Bar offers a vibrant nightlife experience with live music, karaoke nights, and a diverse menu of cocktails and local dishes. Open from 6:00 PM to 2:00 AM on Tuesdays and Wednesdays, 7:00 PM to 4:00 AM on Thursdays, and 7:00 PM to 5:00 AM on Fridays and Saturdays, it provides a lively atmosphere for adults seeking entertainment and socializing. The place is accessible and offers convenient parking options. Reservations can be made via their website at soberbio.cl.",
-        "badges": [
-            "Nightlife",
-            "Live music",
-            "Karaoke"
-        ],
-        "address": "Ifarle Oriente 6701, Talcahuano",
-        "coords": [
-            -36.781,
-            -73.115
-        ],
-        "infoSheet": "assets/sheets/night-life.pdf"
-    },
-    {
-        "id": "udec-campus",
-        "name": "Concepción University Campus",
-        "cat": "urban",
-        "subcat": "spaces",
-        "img": "assets/img/destinations/udec-campus.avif",
-        "description": "Historic 1919 campus with green areas, museums, galleries and cultural landmarks.",
-        "long": "The first Campus of the University was founded in 1919 by a visionary group led by Enrique Molina and Virginio Gomez, this being the first College outside of the capital marked a crucial milestone for the city. This transformed Concepción in a cultural, scientific and economic center, that year after year attracts thousands of students and intellectuals. Since the start of the University, it was designed to be a welcoming place. Beyond its academic centers, it functions as a true cultural and social lung for the city, bringing extensive green areas, beautiful tree-lined paths, which also let you explore a collection of museums, galleries, sculptures and monuments that are within the campus.",
-        "badges": [
-            "Green areas",
-            "Museums",
-            "Cultural hub",
-            "Monuments"
-        ],
-        "address": "Barrio Universitario, Concepción",
-        "coords": [
-            -36.827,
-            -73.03
-        ],
-        "infoSheet": "assets/sheets/universidad-de-concepcion.pdf"
-    },
-    {
-        "id": "paseo-plaza-peru",
-        "name": "Paseo Plaza Perú & Diagonal",
-        "cat": "urban",
-        "subcat": "spaces",
-        "img": "assets/img/destinations/plaza-peru-diagonal.avif",
-        "description": "Cultural and artistic corridor with cafés, bookstores and student life.",
-        "long": "Plaza Perú and the Diagonal Pedro Aguirre Cerda form one of the most iconic spots in downtown Concepción. Plaza Perú often hosts cultural and food fairs, surrounded by restaurants and bars, making it a vibrant meeting place. The Diagonal is lined with bookstores, cafés, handmade products, and student spaces that give the area a unique and artistic identity. It’s perfect for walking, enjoying local events, and soaking in the youthful university atmosphere.",
-        "badges": [
-            "Student life",
-            "Bookstores",
-            "Street art",
-            "Cultural fairs"
-        ],
-        "address": "Diagonal Pedro Aguirre Cerda & Plaza Perú, Concepción",
-        "coords": [
-            -36.827,
-            -73.038
-        ],
-        "infoSheet": "assets/sheets/shopping.pdf"
-    },
-    {
-        "id": "plaza-armas-urban",
-        "name": "Plaza de Armas",
-        "cat": "urban",
-        "subcat": "squares",
-        "img": "assets/img/destinations/plaza-armas.avif",
-        "description": "Main civic square of Concepción, a historic and cultural heart of the city.",
-        "long": "Plaza de Armas de Concepción, also called Plaza de la Independencia, is the civic and historic heart of the city. Surrounded by emblematic buildings, it is the traditional meeting point for locals and visitors alike. The square features tree-lined paths, monuments, and is a stage for cultural activities and public events throughout the year.",
-        "badges": [
-            "Historic center",
-            "Cultural events",
-            "Landmark"
-        ],
-        "address": "Plaza de la Independencia, Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": null
-    },
-    {
-        "id": "parque-ecuador-urban",
-        "name": "Parque Ecuador",
-        "cat": "urban",
-        "subcat": "squares",
-        "img": "assets/img/destinations/parque-ecuador.avif",
-        "description": "Main green lung of Concepción, ideal for recreation and cultural events.",
-        "long": "Close to the center of the city you can find the main green lung of Concepción, stretching 1.34 km with inclusive accessibility. It is perfect for family recreation, cultural events, and connecting with nature.",
-        "badges": [
-            "Recreation",
-            "Family friendly",
-            "Cultural events"
-        ],
-        "address": "Víctor Lamas, Concepción",
-        "coords": [
-            -36.828,
-            -73.041
-        ],
-        "infoSheet": null
-    },
-    {
-        "id": "tome-historic-center",
-        "name": "Tomé Historic Center",
-        "cat": "urban",
-        "subcat": "squares",
-        "img": "assets/img/destinations/tome-historic.avif",
-        "description": "Textile heritage town blending history, port life and coastal culture.",
-        "long": "Tomé grew between the sea and the looms, becoming an important textile center in the 19th century, with the Bellavista factory as a symbol of working-class labor. Its port, railway, and coastal life shaped generations. Today, Tomé invites you to explore its history, enjoy its beaches, and discover the strength of a city that never forgets its roots.",
-        "badges": [
-            "Historic town",
-            "Textile heritage",
-            "Coastal life"
-        ],
-        "address": "Tomé",
-        "coords": [
-            -36.616,
-            -72.954
-        ],
-        "infoSheet": "assets/sheets/historical-tome.pdf"
-    },
-    {
-        "id": "galeria-udec",
-        "name": "Galería Universidad de Concepción",
-        "cat": "urban",
-        "subcat": "shopping",
-        "img": "assets/img/destinations/galeria-udec.avif",
-        "description": "Youthful gallery with indie fashion, local art and cultural vibe.",
-        "long": "Located in Barros Arana 603, a few blocks away from the University of Concepción, this gallery stands out for its creative and youthful atmosphere. It features independent fashion, local art, handmade accessories, bookshops and cafés with character. The surrounding area is full of cultural energy, and connects with the Galería Ramos, where a heritage mural stands out. It’s perfect for visitors looking to explore beyond traditional shops. Some stores do not accept cards, so it is recommended to bring cash. Small pets are allowed in some places.",
-        "badges": [
-            "Indie fashion",
-            "Local art",
-            "Youthful vibe"
-        ],
-        "address": "Barros Arana 603, Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": "assets/sheets/shopping.pdf"
-    },
-    {
-        "id": "galeria-alessandri",
-        "name": "Galería Alessandri",
-        "cat": "urban",
-        "subcat": "shopping",
-        "img": "assets/img/destinations/galeria-alessandri.avif",
-        "description": "Historic gallery in downtown Concepción with bookstores, vintage shops and cafés.",
-        "long": "Located in Aníbal Pinto 450, in the heart of Concepción, this historic gallery blends traditional commerce with culture. Here you will find bookstores, vintage clothing, vinyl records, mystical items, and cozy cafés. Ideal for people seeking souvenirs with local identity. Safe pedestrian area with access from Plaza de Armas. Most shops accept cards, but it’s useful to carry cash.",
-        "badges": [
-            "Vintage",
-            "Souvenirs",
-            "Cafés"
-        ],
-        "address": "Aníbal Pinto 450, Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": "assets/sheets/shopping.pdf"
-    },
-    {
-        "id": "galeria-caracol",
-        "name": "Galería Caracol",
-        "cat": "urban",
-        "subcat": "shopping",
-        "img": "assets/img/destinations/galeria-caracol.avif",
-        "description": "Spiral-shaped gallery with alternative culture, music, comics and shops.",
-        "long": "Located in Rengo 578, in the center of Concepción. This spiral-shaped gallery mixes commerce, art and alternative culture. Here you will find hairdressing shops, music stores, jewelry, mystical and fanatical objects, comics, games and more. Its atmosphere is authentic, ideal for people looking for souvenirs with local identity. Safe pedestrian area. Most places accept cards, but it is advisable to bring cash. Not all spaces are accessible for people with reduced mobility.",
-        "badges": [
-            "Alternative culture",
-            "Music",
-            "Comics"
-        ],
-        "address": "Rengo 578, Concepción",
-        "coords": [
-            -36.826,
-            -73.049
-        ],
-        "infoSheet": "assets/sheets/shopping.pdf"
-    },
-    {
-        "id": "plaza-peru-shopping",
-        "name": "Plaza Perú & Diagonal Pedro Aguirre Cerda",
-        "cat": "urban",
-        "subcat": "shopping",
-        "img": "assets/img/destinations/plaza-peru.avif",
-        "description": "Iconic student hub with bookstores, cafés, fairs and artistic vibe.",
-        "long": "These iconic spots in downtown Concepción combine local commerce with a strong university and artistic atmosphere. Along the Diagonal you’ll find bookstores, cafés, and handmade products, ideal for those looking for something unique. Plaza Perú often hosts cultural and food fairs, and is surrounded by restaurants to enjoy. It’s a lively area perfect for walking, shopping for souvenirs, or enjoying street art. Visiting during the day is strongly recommended. It is easy to explore on foot, scooter or bike.",
-        "badges": [
-            "Bookstores",
-            "Handmade products",
-            "Street art"
-        ],
-        "address": "Diagonal Pedro Aguirre Cerda & Plaza Perú, Concepción",
-        "coords": [
-            -36.827,
-            -73.038
-        ],
-        "infoSheet": "assets/sheets/shopping.pdf"
-    },
-    {
-        "id": "barros-arana-street",
-        "name": "Street Barros Arana",
-        "cat": "urban",
-        "subcat": "shopping",
-        "img": "assets/img/destinations/barros-arana.png",
-        "description": "Main commercial street of Concepción with shops, bookstores and cafés.",
-        "long": "Barros Arana is Concepción’s most iconic commercial street. Running through the city center, it brings together everything from major clothing and tech stores to bookstores, cosmetics, and specialty shops. Its lively atmosphere and excellent connectivity make it perfect for tourists seeking convenient shopping without leaving downtown. On nearby walkways, you’ll also find cozy cafés, local designs, and unique finds full of character. A dynamic, well-rounded shopping experience at the core of the city.",
-        "badges": [
-            "Shopping",
-            "Cafés",
-            "Local design"
-        ],
-        "address": "Barros Arana, Concepción",
-        "coords": [
-            -36.827,
-            -73.049
-        ],
-        "infoSheet": "assets/sheets/shopping.pdf"
-    },
-    {
-        "id": "casa-marisio",
-        "name": "Casa Marisio",
-        "cat": "urban",
-        "subcat": "shopping",
-        "img": "assets/img/destinations/casa-marisio.avif",
-        "description": "Historic jewelry store with over 130 years of tradition in Concepción.",
-        "long": "With a 130-year history and recognized as the first jewelry store in southern Chile, Casa Marisio has dedicated over five generations to offering high-quality products, becoming an iconic shop in the city of Concepción. It is undoubtedly a must-visit place. Located between Barros Arana and Caupolicán streets, right in front of the beautiful Plaza de la Independencia, visitors are encouraged to explore the surrounding areas for a unique and culturally rich experience.",
-        "badges": [
-            "Jewelry",
-            "Historic shop",
-            "Tradition"
-        ],
-        "address": "Barros Arana & Caupolicán, Concepción",
-        "coords": [
-            -36.827,
-            -73.049
-        ],
-        "infoSheet": "assets/sheets/concepcion.pdf"
     }
 ]
