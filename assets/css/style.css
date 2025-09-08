@@ -163,7 +163,7 @@ p {
 }
 
 .intro__logo {
-    height: 48px;
+    height: 60px;
     width: auto
 }
 
@@ -258,7 +258,7 @@ body.lock-scroll {
 
 .header__logo img {
     display: block;
-    height: 30px;
+    height: 50px;
     width: auto
 }
 
@@ -2293,7 +2293,8 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
     }
 
     .header__logo img {
-        max-height: 30px;
+        max-height: 40px;
+        /* ajusta según necesites */
     }
 
     .header__actions {
