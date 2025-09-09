@@ -376,10 +376,16 @@
           ${item.address || mapsHref
                 ? `
             <div class="detail__address">
-              <h4>Address</h4>
-              ${item.address ? `<p>${item.address}</p>` : ''}
+              <div class="detail__address-info">
+                <h4>Address</h4>
+                ${item.address ? `<p>${item.address}</p>` : ''}
+              </div>
               ${mapsHref
-                    ? `<a class="btn--map" href="${mapsHref}" target="_blank" rel="noopener">Open in Google Maps</a>`
+                    ? `
+                <a class="btn--map" href="${mapsHref}" target="_blank" rel="noopener">
+                  <img src="assets/img/iconos/location_on.svg" alt="" class="btn__icon">
+                  Open Maps
+                </a>`
                     : ''
                 }
             </div>`
@@ -396,9 +402,14 @@
       </div>
     `;
 
-        // Enfocar el título para lector de pantalla / teclado
+        // Enfocar el título para a11y y desplazar la vista al inicio del catálogo
         const title = document.getElementById('detailTitle');
-        if (title) title.focus?.();
+        if (title) {
+            // 1. Enfocar el título para lectores de pantalla, sin que el navegador desplace la vista.
+            title.focus({ preventScroll: true });
+            // 2. Desplazar manualmente la vista al inicio del panel de resultados.
+            resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
         // Toggle del PDF/imagen
         const toggleBtn = document.getElementById('toggleSheetBtn');
@@ -425,6 +436,64 @@
 
         // REMOVED: no activar reveal sobre el detalle
         // window.__Reveal?.observe(detail);
+    }
+
+    // ---- NEW: Function to render search results ----
+    function renderFromSearch(list, query) {
+        setBusy(true);
+
+        // Ensure we are in list view
+        setHeaderToList();
+        detail.hidden = true;
+        detail.innerHTML = '';
+        grid.hidden = false;
+
+        // Update header for search results
+        const resultsTitle = getResultsTitle();
+        const resultsSubtitle = getResultsSubtitle();
+        if (resultsTitle && resultsSubtitle) {
+            if (query) {
+                resultsTitle.textContent = 'Search Results';
+                resultsSubtitle.textContent = `Found ${list.length} destinations for "${query}"`;
+            } else {
+                // If query is empty, revert to "All"
+                resultsTitle.textContent = labels.all.name;
+                resultsSubtitle.textContent = labels.all.desc;
+            }
+        }
+
+        // Update state messages (show empty message only if there was a query)
+        showState({ loading: false, empty: list.length === 0 && !!query, error: false });
+
+        // Deactivate sidebar filters
+        document.querySelectorAll('.filters__group').forEach(g => g.classList.remove('active'));
+        document.querySelectorAll('.filters__chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
+        if (!query) {
+            // If query is empty, reactivate "All"
+            document.querySelector('.filters__chip[data-cat="all"]')?.setAttribute('aria-pressed', 'true');
+            document.querySelector('.filters__group[data-cat="all"]')?.classList.add('active');
+        }
+
+        // Render the cards
+        grid.innerHTML = list
+            .map((d) => {
+                return `
+          <article class="card" role="listitem" data-id="${d.id}">
+            <div class="card__media">
+              <img src="${d.img}" alt="${d.name}">
+            </div>
+            <div class="card__body">
+              <h3 class="card__title">${d.name}</h3>
+              <p class="card__text">${d.description}</p>
+              <div class="card__actions">
+                <a href="#dest/${d.id}" class="btn btn--secondary card__more" data-id="${d.id}">View details</a>
+              </div>
+            </div>
+          </article>`;
+            }).join('');
+
+        setResultsState('list');
+        setBusy(false);
     }
 
     // -----------------------------------------------
@@ -465,6 +534,7 @@
                 }
 
                 renderCards(destinations);
+                resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 return;
             }
         });
@@ -496,6 +566,7 @@
                 active.subcat = sub;
             }
             renderCards(destinations);
+            resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
 
@@ -506,6 +577,7 @@
         document.querySelectorAll('.filters__chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
         document.querySelector('.filters__chip[data-cat="all"]')?.setAttribute('aria-pressed', 'true');
         renderCards(destinations);
+        resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
     // Delegación para "View details"
@@ -569,6 +641,9 @@
 
     // ---- Init
     loadData();
+
+    // Expose render function for search module
+    window.renderFromSearch = renderFromSearch;
 })();
 
 // ============================
@@ -601,56 +676,21 @@
     // 3) Lógica de búsqueda sobre varios campos
     function searchData(query, data) {
         const q = norm(query);
-        if (!q) return data;
+        if (!q) return data; // Return all if query is empty
 
         return data.filter((d) => {
-            const title = norm(d.title || d.nombre || d.name);
-            const desc = norm(d.description || d.descripcion || d.summary || d.long || '');
-            const cat = norm(d.category || d.categoria || d.cat || '');
-            const subcats = norm(d.subcat || '');
-            const tags = Array.isArray(d.tags) ? d.tags.map(norm).join(' ') : '';
-            const city = norm(d.location?.city || d.ubicacion?.ciudad || '');
-            const region = norm(d.location?.region || d.ubicacion?.region || '');
+            const name = norm(d.name);
+            const description = norm(d.description);
+            const longDesc = norm(d.long);
+            const cat = norm(d.cat);
+            const subcat = norm(d.subcat);
+            const badges = Array.isArray(d.badges) ? d.badges.map(norm).join(' ') : '';
+            const address = norm(d.address);
 
-            const haystack = [title, desc, cat, subcats, tags, city, region].join(' ');
+            const haystack = [name, description, longDesc, cat, subcat, badges, address].join(' ');
             return haystack.includes(q);
         });
     }
-
-    // 4) Render (usa el tuyo si existe)
-    function minimalRender(list) {
-        const grid = document.getElementById('cardsGrid'); // FIX: mismo ID que tu HTML
-        if (!grid) return;
-        grid.innerHTML = list
-            .map((d) => {
-                const title = d.title || d.nombre || d.name || 'Untitled';
-                const img = (d.images && d.images[0]) || d.image || d.img || 'assets/img/placeholder.jpg';
-                const cat = d.category || d.categoria || d.cat || '';
-                const city = d.location?.city || d.ubicacion?.ciudad || '';
-                const region = d.location?.region || d.ubicacion?.region || '';
-                const subtitle = [cat, city || region].filter(Boolean).join(' • ');
-                return `
-          <article class="card">
-            <div class="card__thumb">
-              <img src="${img}" alt="${title}" loading="lazy" decoding="async">
-            </div>
-            <div class="card__body">
-              <h3 class="card__title">${title}</h3>
-              <p class="card__meta">${subtitle}</p>
-            </div>
-          </article>
-        `;
-            })
-            .join('');
-    }
-
-    const render = (list) => {
-        if (typeof window.renderDestinations === 'function') {
-            window.renderDestinations(list);
-        } else {
-            minimalRender(list);
-        }
-    };
 
     // 5) Debounce
     const debounce = (fn, ms = 200) => {
@@ -669,7 +709,11 @@
         // Aviso opcional a otras partes de la app
         window.dispatchEvent(new CustomEvent('search:results', { detail: { query: q, results } }));
 
-        render(results);
+        if (typeof window.renderFromSearch === 'function') {
+            window.renderFromSearch(results, q);
+        } else {
+            console.error("Search render function not found. Catalog module might not be loaded correctly.");
+        }
     }
 
     // 7) Eventos (submit + input con debounce)

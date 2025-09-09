@@ -495,6 +495,11 @@ body.lock-scroll {
 }
 
 /* ====== TEMAS con :has() (sin JS) ====== */
+body:has(#theme-rally:checked) {
+    --color-primario: #E1251B;
+    --color-secundario: #024C91
+}
+
 body:has(#theme-default:checked) {
     --color-primario: #009A96;
     --color-secundario: #FFB71B
@@ -551,6 +556,13 @@ body:has(#theme-grape:checked) {
 }
 
 /* ===== Theme: resaltar label del tema seleccionado (CSS puro) ===== */
+/* Rally */
+body:has(#theme-rally:checked) .theme-dropdown label[for="theme-rally"] {
+    background: var(--blanco);
+    border-color: var(--color-primario);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-primario) 50%, transparent);
+}
+
 /* Default */
 body:has(#theme-default:checked) .theme-dropdown label[for="theme-default"] {
     background: var(--hover);
@@ -718,7 +730,7 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
 /* ===== Sidebar (filters) ===== */
 .filters {
     position: sticky;
-    top: calc(64px + var(--espacio-md));
+    top: calc(85px + var(--espacio-md));
     align-self: start;
 }
 
@@ -992,8 +1004,8 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
 }
 
 .btn:hover {
-    background: var(--color-primario);
-    color: var(--azul-titulos);
+    background: var(--color-secundario);
+    color: black;
     border-color: var(--color-secundario);
 }
 
@@ -1078,6 +1090,18 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
     margin-top: .5rem;
     display: flex;
     gap: .5rem;
+}
+
+/* Hacer que el botón de acciones ocupe todo el ancho */
+.detail__actions .btn {
+    width: 100%;
+    text-align: center;
+    font-family: inherit;
+    /* Usar la fuente del sitio */
+    font-weight: 600;
+    /* Igualar a btn--map */
+    font-size: 1rem;
+    /* Igualar a btn--map (16px) */
 }
 
 .detail__back {
@@ -1505,7 +1529,6 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
 .badge {
     display: inline-flex;
     align-items: center;
-    gap: .35rem;
     padding: .35rem .6rem;
     border-radius: 999px;
     border: 1px solid var(--borde);
@@ -1514,25 +1537,26 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
     color: var(--azul-titulos);
 }
 
-.badge::before {
-    content: "•";
-    color: var(--color-primario);
-    font-weight: 700;
-}
-
 /* Dirección + Maps */
 .detail__address {
     border: 1px dashed var(--borde);
     border-radius: 12px;
-    padding: var(--espacio-md);
+    padding: var(--espacio-sm) var(--espacio-md);
     color: var(--gris-textos);
-    display: grid;
-    gap: .5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--espacio-md);
 }
 
 .detail__address h4 {
     font-size: 1rem;
     margin-bottom: .25rem;
+}
+.detail__address p {
+    margin-bottom: 0;
+    font-size: .95rem;
+    line-height: 1.4;
 }
 
 .btn--map {
@@ -1546,12 +1570,24 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
     padding: .5rem .9rem;
     text-decoration: none;
     font-weight: 600;
+    line-height: 20px;
+}
+
+.btn__icon {
+    width: 20px;
+    height: 20px;
+    filter: invert(1) brightness(2); /* Make icon white */
+    transition: filter .15s ease;
 }
 
 .btn--map:hover {
     background: var(--color-secundario);
     color: var(--azul-titulos);
     border-color: var(--color-secundario);
+}
+
+.btn--map:hover .btn__icon {
+    filter: none; /* Revert to original color on hover */
 }
 
 /* Acciones pie */
@@ -1606,6 +1642,22 @@ body:has(#theme-grape:checked) .theme-dropdown label[for="theme-grape"] {
 
 .results.is-detail #cardsGrid {
     display: none !important;
+}
+
+/* Reposicionar el header en la vista de detalle para alinearla con el sidebar */
+.results.is-detail {
+    position: relative;
+    /* Contexto para posicionar el botón de volver */
+}
+
+.results.is-detail .results__header {
+    position: absolute;
+    top: var(--espacio-lg);
+    left: var(--espacio-lg);
+    z-index: 10;
+    /* Para que aparezca sobre la imagen del detalle */
+    margin-bottom: 0;
+    /* Elimina el margen que empuja el contenido hacia abajo */
 }
 
 /* Opcional: transiciones suaves al cambiar de estado */

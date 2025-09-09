@@ -59,6 +59,11 @@
                     <button class="dropdown__toggle" aria-label="Cambiar tema">Theme</button>
                     <div class="dropdown__menu">
                         <div class="theme-palette">
+                            <label for="theme-rally" class="swatch">
+                                <span class="dot" style="--swatch:#E1251B"></span>
+                                <span class="dot" style="--swatch:#024C91"></span>
+                                <small>Rally</small>
+                            </label>
                             <label for="theme-default" class="swatch">
                                 <span class="dot" style="--swatch:#009A96"></span>
                                 <span class="dot" style="--swatch:#FFB71B"></span>
@@ -95,6 +100,7 @@
 
                 <!-- Radios ocultos (para cambiar tema con CSS) -->
                 <div class="theme-radios">
+                    <input type="radio" name="theme" id="theme-rally">
                     <input type="radio" name="theme" id="theme-default" checked>
                     <input type="radio" name="theme" id="theme-ocean">
                     <input type="radio" name="theme" id="theme-coral">
