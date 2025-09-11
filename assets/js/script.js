@@ -1,1000 +1,727 @@
-/* =========================================================
-   Intro (Splash) + Reveal on Scroll (robusto)
-========================================================= */
-(() => {
-    // --- Módulo Reveal (reusable)
-    const Reveal = (() => {
-        const SELECTOR = '.reveal';
-        let io = null;
+/*
+ * script.js for Discover Bio Bío
+ * Handles data fetching, rendering, filtering, search, modal, and animations.
+ */
 
-        function revealNow(el) {
-            const delay = Number(el.getAttribute('data-delay') || 0);
-            if (delay > 0) {
-                setTimeout(() => el.classList.add('revealed'), delay);
-            } else {
-                el.classList.add('revealed');
+(function () {
+    "use strict";
+
+    // --- STATE MANAGEMENT ---
+    const state = {
+        destinations: [],
+        filteredDestinations: [],
+        map: null,
+        markerLayer: null,
+        currentCategory: 'all',
+        currentSubcategory: 'all',
+        currentLanguage: 'en',
+        i18n: {},
+    };
+
+    // --- DOM ELEMENT SELECTORS ---
+    const DOMElements = {
+        siteHeader: document.querySelector('.site-header'),
+        splashScreen: document.getElementById('splash-screen'),
+        grid: document.getElementById('destinations-grid'),
+        destinationsList: document.getElementById('destinations-list'),
+        destinationsSection: document.getElementById('destinations'),
+        scrollToTopBtn: document.getElementById('scroll-to-top-btn'),
+        searchBar: document.getElementById('search-bar'),
+        filters: document.getElementById('filters'),
+        headerControls: document.querySelector('.header-controls'),
+        mobileMenuToggle: document.getElementById('mobile-menu-toggle'),
+        headerDropdownMenu: document.getElementById('header-dropdown-menu'),
+        subFilters: document.getElementById('sub-filters'),
+        languageSwitcher: document.querySelector('.language-switcher'),
+        viewSwitcher: document.getElementById('view-switcher'),
+        mapContainer: document.getElementById('map-container'),
+        modal: document.getElementById('detail-modal'),
+        modalCloseBtn: document.getElementById('modal-close-btn'),
+        modalBanner: document.getElementById('modal-banner'),
+        modalTitle: document.getElementById('modal-title'),
+        modalDescription: document.getElementById('modal-description'),
+        modalBadges: document.getElementById('modal-badges'),
+        modalAddress: document.getElementById('modal-address'),
+        modalMapLink: document.getElementById('modal-map-link'),
+        modalSheetLink: document.getElementById('modal-sheet-link'),
+        // Game Elements
+        gameGrid: document.getElementById('game-grid'),
+        shuffleBtn: document.getElementById('shuffle-btn'),
+        winMessage: document.getElementById('game-win-message'),
+        communityProjectGame: document.querySelector('.community-project-game'),
+        themeSwitcher: document.querySelector('.theme-switcher'),
+    };
+
+    // --- LEAFLET CUSTOM ICONS ---
+    const categoryColors = {
+        nature: '#4CAF50',
+        heritage: '#795548',
+        culture: '#673AB7',
+        gastronomy: '#FF9800',
+        urban: '#607D8B',
+        default: '#009A96' // Primary color as fallback
+    };
+
+    // Function to create a custom SVG marker icon
+    const createMarkerIcon = (color) => {
+        return L.divIcon({
+            html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><path fill="${color}" stroke="#fff" stroke-width="1.5" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#fff"/></svg>`,
+            className: 'svg-marker-icon', // A class to remove default divIcon styles
+            iconSize: [32, 32],
+            iconAnchor: [16, 32], // Point of the icon
+            popupAnchor: [0, -32]
+        });
+    };
+
+    const categoryIcons = {
+        nature: createMarkerIcon(categoryColors.nature),
+        heritage: createMarkerIcon(categoryColors.heritage),
+        culture: createMarkerIcon(categoryColors.culture),
+        gastronomy: createMarkerIcon(categoryColors.gastronomy),
+        urban: createMarkerIcon(categoryColors.urban),
+        default: createMarkerIcon(categoryColors.default)
+    };
+
+    // --- HELPERS ---
+    // --- API & DATA FETCHING ---
+    async function fetchI18n() {
+        try {
+            const response = await fetch('assets/data/i18n.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            state.i18n = await response.json();
+        } catch (error) {
+            console.error("Could not fetch i18n strings:", error);
+        }
+    }
+    async function fetchDestinations() {
+        try {
+            const response = await fetch('assets/data/destinations.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            state.destinations = await response.json();
+        } catch (error) {
+            console.error("Could not fetch destinations:", error);
+            const lang = state.currentLanguage;
+            const errorMsg = state.i18n[lang]?.error_loading_destinations || 'Error loading destinations. Please try again later.';
+            DOMElements.grid.innerHTML = `<p>${errorMsg}</p>`;
+        }
+    }
+
+    // --- RENDER FUNCTIONS ---
+    function createDestinationCard(destination) {
+        const lang = state.currentLanguage;
+        const card = document.createElement('article');
+        card.className = 'destination-card reveal';
+        card.dataset.id = destination.id;
+
+        const name = (destination.name && destination.name[lang]) || (destination.name && destination.name.en) || destination.id;
+        const description = (destination.description && destination.description[lang]) || (destination.description && destination.description.en) || '';
+        const categoryName = state.i18n[lang]?.[`filter_${destination.cat}`] || destination.cat.charAt(0).toUpperCase() + destination.cat.slice(1);
+
+        card.innerHTML = `
+       <img src="${destination.img}" alt="${name}" class="card-image">
+       <div class="card-content">
+         <h3>${name}</h3>
+         <p>${description}</p>
+         <span class="card-category" data-category="${destination.cat}">${categoryName}</span>
+       </div>
+     `;
+        return card;
+    }
+
+    function createDestinationListItem(destination) {
+        const item = document.createElement('article');
+        const lang = state.currentLanguage;
+        item.className = 'destination-list-item reveal';
+        item.dataset.id = destination.id;
+
+        const name = (destination.name && destination.name[lang]) || (destination.name && destination.name.en) || destination.id;
+        const description = (destination.description && destination.description[lang]) || (destination.description && destination.description.en) || '';
+        const categoryName = state.i18n[lang]?.[`filter_${destination.cat}`] || destination.cat.charAt(0).toUpperCase() + destination.cat.slice(1);
+
+        item.innerHTML = `
+      <img src="${destination.img}" alt="${name}" class="list-item-image">
+      <div class="list-item-content">
+          <div class="list-item-header">
+              <h3>${name}</h3>
+              <span class="card-category" data-category="${destination.cat}">${categoryName}</span>
+          </div>
+          <p>${description}</p>
+      </div>
+    `;
+        return item;
+    }
+
+    function renderDestinations(destinations) {
+        DOMElements.grid.innerHTML = '';
+        DOMElements.destinationsList.innerHTML = '';
+        if (!destinations) return;
+
+        const activeView = DOMElements.viewSwitcher.querySelector('.active').dataset.view;
+        if (activeView === 'map') return; // Don't render cards if map is active
+
+        const container = activeView === 'grid' ? DOMElements.grid : DOMElements.destinationsList;
+        const createItem = activeView === 'grid' ? createDestinationCard : createDestinationListItem;
+
+        if (destinations.length === 0) {
+            const lang = state.currentLanguage;
+            const noResultsMsg = state.i18n[lang]?.no_destinations_found || 'No destinations found matching your search.';
+            container.innerHTML = `<p>${noResultsMsg}</p>`;
+            return;
+        }
+        destinations.forEach(destination => {
+            const item = createItem(destination);
+            container.appendChild(item);
+        });
+        setupIntersectionObserver(); // Re-observe new cards
+    }
+
+    function renderSubFilters(category) {
+        const lang = state.currentLanguage;
+        DOMElements.subFilters.innerHTML = '';
+
+        if (category === 'all') {
+            DOMElements.subFilters.style.display = 'none';
+            return;
         }
 
-        function ensureIO() {
-            if (!('IntersectionObserver' in window)) return null;
-            if (!io) {
-                io = new IntersectionObserver(
-                    entries => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                const el = entry.target;
-                                revealNow(el);
-                                io.unobserve(el);
-                            }
-                        });
-                    },
-                    { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.12 }
-                );
-            }
-            return io;
+        // Find unique subcategories for the selected main category
+        const subcategories = [...new Set(
+            state.destinations
+                .filter(dest => dest.cat === category && dest.subcat)
+                .map(dest => dest.subcat)
+        )];
+
+        // If there are no subcategories or only one, don't show the filter bar
+        if (subcategories.length <= 1) {
+            DOMElements.subFilters.style.display = 'none';
+            return;
         }
 
-        function observe(root = document) {
-            const items = Array.from(root.querySelectorAll(SELECTOR))
-                .filter(el => !el.dataset.revealReady);
+        // Create "All" button for the sub-category
+        const allBtn = document.createElement('button');
+        allBtn.className = `sub-filter-btn ${category} active`;
+        allBtn.dataset.filter = 'all';
+        allBtn.textContent = state.i18n[lang]?.subfilter_all || 'All';
+        DOMElements.subFilters.appendChild(allBtn);
 
-            if (!items.length) return;
+        // Create buttons for each subcategory
+        subcategories.forEach(subcat => {
+            const btn = document.createElement('button');
+            btn.className = `sub-filter-btn ${category}`;
+            btn.dataset.filter = subcat;
+            btn.textContent = state.i18n[lang]?.[`subcat_${subcat}`] || subcat.charAt(0).toUpperCase() + subcat.slice(1);
+            DOMElements.subFilters.appendChild(btn);
+        });
 
-            // Sin IO → revelar directo
-            if (!('IntersectionObserver' in window)) {
-                items.forEach(el => {
-                    el.classList.add('revealed');
-                    el.dataset.revealReady = '1';
+        DOMElements.subFilters.style.display = 'flex';
+    }
+
+    function initMap() {
+        if (typeof L === 'undefined') {
+            console.error("Leaflet library not loaded.");
+            DOMElements.mapContainer.innerHTML = `<p>Error loading the map.</p>`;
+            return;
+        }
+
+        state.map = L.map(DOMElements.mapContainer).setView([-37.0, -72.5], 8); // Centered on Biobío Region
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(state.map);
+
+        state.markerLayer = L.layerGroup().addTo(state.map);
+    }
+
+    function updateMapMarkers(destinations) {
+        if (!state.map || !state.markerLayer) return;
+
+        state.markerLayer.clearLayers();
+
+        const lang = state.currentLanguage;
+
+        destinations.forEach(destination => {
+            if (destination.coords && destination.coords.length === 2) {
+                const icon = categoryIcons[destination.cat] || categoryIcons.default;
+                const marker = L.marker(destination.coords, { icon: icon });
+                const name = (destination.name && destination.name[lang]) || (destination.name && destination.name.en) || destination.id;
+                const popupContent = `
+           <strong>${name}</strong><br>
+           <a href="#" class="map-popup-link" data-id="${destination.id}" data-category="${destination.cat}">${state.i18n[lang]?.map_popup_details || 'View details'}</a>
+         `;
+                marker.bindPopup(popupContent);
+
+                // Open popup on hover
+                marker.on('mouseover', function () {
+                    this.openPopup();
                 });
-                return;
+
+                marker.addTo(state.markerLayer);
             }
-
-            const obs = ensureIO();
-            items.forEach(el => {
-                el.dataset.revealReady = '1';
-                obs.observe(el);
-            });
-        }
-
-        // Observa nuevos nodos añadidos dinámicamente (por si hay HTML inyectado fuera de catálogo)
-        const mo = new MutationObserver(() => observe());
-        mo.observe(document.documentElement, { childList: true, subtree: true });
-
-        return { observe };
-    })();
-
-    // --- Intro + Boot
-    const intro = document.getElementById('intro');
-    let hidden = false;
-
-    function initRevealOnPage() {
-        // Activa reveal para todo lo que tenga .reveal
-        Reveal.observe(document);
-    }
-
-    if (!intro) {
-        initRevealOnPage();
-        return;
-    }
-
-    document.body.classList.add('lock-scroll');
-
-    function hideIntro() {
-        if (hidden) return;
-        hidden = true;
-        intro.classList.add('intro--hide');
-        document.body.classList.remove('lock-scroll');
-        setTimeout(() => intro.remove(), 700);
-    }
-
-    function onReady() {
-        setTimeout(hideIntro, 1500);
-        initRevealOnPage();
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', onReady, { once: true });
-    } else {
-        onReady();
-    }
-
-    // Permitir saltar con interacción
-    window.addEventListener('click', hideIntro, { once: true });
-    window.addEventListener('keydown', hideIntro, { once: true });
-    window.addEventListener('wheel', hideIntro, { once: true, passive: true });
-    window.addEventListener('touchstart', hideIntro, { once: true, passive: true });
-
-    // Fallback duro
-    setTimeout(hideIntro, 4000);
-
-    // Exponer para otros IIFEs de este archivo
-    window.__Reveal = Reveal;
-})();
-
-/* =========================================================
-   Catalog: Load JSON + Filters + Cards + Detail
-   (dos estados en .results: lista vs detalle)
-========================================================= */
-(() => {
-    // ---- DOM refs
-    const grid = document.getElementById('cardsGrid');
-    const detail = document.getElementById('detailView');
-    const stateLoading = document.querySelector('.results__state--loading');
-    const stateEmpty = document.querySelector('.results__state--empty');
-    const stateError = document.querySelector('.results__state--error');
-    const resetBtn = document.getElementById('filtersReset');
-    const resultsPanel = document.querySelector('.results');
-    const resultsHeader = document.querySelector('.results__header');
-
-    if (!grid || !detail || !resultsPanel) return; // si no existe la sección catálogo
-
-    // Accesores para título/subtítulo (porque el header cambia en detalle)
-    const getResultsTitle = () => document.querySelector('.results__title');
-    const getResultsSubtitle = () => document.querySelector('.results__subtitle');
-
-    // ---- Helpers de estado del panel derecho
-    function setResultsState(mode /* 'list' | 'detail' */) {
-        resultsPanel.classList.toggle('is-list', mode === 'list');
-        resultsPanel.classList.toggle('is-detail', mode === 'detail');
-    }
-    function setBusy(isBusy) {
-        resultsPanel.setAttribute('aria-busy', isBusy ? 'true' : 'false');
-    }
-
-    // ---- Header: modos
-    const originalHeaderHTML = resultsHeader ? resultsHeader.innerHTML : '';
-    function setHeaderToList() {
-        if (!resultsHeader) return;
-        // Si el header no tiene los elementos de lista, restáuralos
-        if (!getResultsTitle() || !getResultsSubtitle()) {
-            resultsHeader.innerHTML = originalHeaderHTML || `
-        <h2 class="results__title">All Destinations</h2>
-        <p class="results__subtitle">Showing all destinations available</p>
-      `;
-        }
-    }
-    function setHeaderToDetail(onBack) {
-        if (!resultsHeader) return;
-        resultsHeader.innerHTML = `
-      <button class="detail__back" type="button" id="detailBackTop">← Back to results</button>
-    `;
-        const backTop = document.getElementById('detailBackTop');
-        if (backTop) backTop.addEventListener('click', onBack, { once: true });
-    }
-
-    // ---- Data
-    let destinations = [];
-
-    // ---- Filtro activo
-    const active = { cat: 'all', subcat: null };
-
-    // ---- Labels para títulos dinámicos
-    const labels = {
-        all: { name: 'All Destinations', desc: 'Showing all destinations available' },
-        nature: { name: 'Natural Spaces', desc: 'Explore mountains, lagoons, beaches and more' },
-        heritage: { name: 'Heritage', desc: 'Discover historic buildings and squares' },
-        culture: { name: 'Culture', desc: 'Museums, markets and cultural life' },
-        gastronomy: { name: 'Gastronomy', desc: 'Enjoy cafés, restaurants and bars' },
-        urban: { name: 'Urban', desc: 'Squares, shopping and modern spaces' }
-    };
-
-    // ⚠️ Importante: usar las keys reales del JSON
-    const subLabels = {
-        parks: 'Parks',
-        mountains: 'Mountains',
-        lagoons: 'Lagoons',
-        'beaches-coast': 'Beaches & Coast',
-        viewpoints: 'Viewpoints',
-        buildings: 'Buildings',
-        squares: 'Squares',
-        museums: 'Museums',
-        market: 'Market',
-        cafes: 'Cafés',
-        restaurants: 'Restaurants',
-        bars: 'Bars',
-        spaces: 'Spaces',
-        shopping: 'Shopping'
-    };
-
-    // ---- Helpers de filtrado
-    const byFilter = item => {
-        if (active.cat === 'all') return true;
-        if (item.cat !== active.cat) return false;
-        if (active.subcat) return item.subcat === active.subcat;
-        return true;
-    };
-
-    function showState({ loading = false, empty = false, error = false }) {
-        if (stateLoading) stateLoading.hidden = !loading;
-        if (stateEmpty) stateEmpty.hidden = !empty;
-        if (stateError) stateError.hidden = !error;
-    }
-
-    function renderCounts(data) {
-        const totals = { all: data.length };
-        data.forEach(d => {
-            totals[d.cat] = (totals[d.cat] || 0) + 1;
-            const key = `${d.cat}:${d.subcat}`;
-            totals[key] = (totals[key] || 0) + 1;
-        });
-
-        // Contadores de categorías (si se usan)
-        document.querySelectorAll('[data-count-cat]').forEach(el => {
-            const k = el.getAttribute('data-count-cat');
-            el.textContent = `(${totals[k] || 0})`;
-        });
-        // Contadores de subcategorías
-        document.querySelectorAll('[data-count]').forEach(el => {
-            const k = el.getAttribute('data-count');
-            el.textContent = totals[k] != null ? totals[k] : 0;
         });
     }
 
-    function updateResultsHeaderForList() {
-        const resultsTitle = getResultsTitle();
-        const resultsSubtitle = getResultsSubtitle();
-        if (!resultsTitle || !resultsSubtitle) return;
-        if (active.cat === 'all') {
-            resultsTitle.textContent = labels.all.name;
-            resultsSubtitle.textContent = labels.all.desc;
+    function handleViewSwitch(e) {
+        const target = e.target.closest('.view-btn');
+        if (!target) return;
+
+        const currentView = target.dataset.view;
+
+        // Update active button
+        DOMElements.viewSwitcher.querySelector('.active').classList.remove('active');
+        target.classList.add('active');
+
+        // Toggle visibility
+        const isGridView = currentView === 'grid';
+        const isListView = currentView === 'list';
+        const isMapView = currentView === 'map';
+
+        DOMElements.grid.style.display = isGridView ? 'grid' : 'none';
+        DOMElements.destinationsList.style.display = isListView ? 'block' : 'none';
+        DOMElements.mapContainer.style.display = isMapView ? 'block' : 'none';
+
+        // If map is now visible, tell Leaflet to update its size
+        if (isMapView) {
+            if (state.map) setTimeout(() => state.map.invalidateSize(), 10);
         } else {
-            resultsTitle.textContent = labels[active.cat]?.name || 'Destinations';
-            if (active.subcat) {
-                const sub = subLabels[active.subcat] || active.subcat;
-                resultsSubtitle.textContent = `Showing ${sub} in ${labels[active.cat]?.name || active.cat}`;
-            } else {
-                resultsSubtitle.textContent = labels[active.cat]?.desc || 'Filtered results';
-            }
+            renderDestinations(state.filteredDestinations);
         }
     }
 
-    function highlightActiveGroup() {
-        document.querySelectorAll('.filters__group').forEach(g => g.classList.remove('active'));
-        const catToMark = active.cat || 'all';
-        document.querySelector(`.filters__group[data-cat="${catToMark}"]`)?.classList.add('active');
+    // --- EVENT HANDLERS ---
+    function handleFilter(e) {
+        const target = e.target;
+        if (target.tagName !== 'BUTTON') return;
+
+        // Update active button style
+        document.querySelector('.filter-btn.active').classList.remove('active');
+        target.classList.add('active');
+
+        const filter = target.dataset.filter;
+        state.currentCategory = filter;
+        state.currentSubcategory = 'all'; // Reset subcategory when main category changes
+
+        renderSubFilters(filter); // Render sub-filters for the new category
+
+        const searchTerm = DOMElements.searchBar.value.toLowerCase();
+
+        applyFilters(filter, 'all', searchTerm);
     }
 
-    // ---- Render listado (estado LISTA)
-    function renderCards(data) {
-        setBusy(true);
+    function handleSubFilter(e) {
+        const target = e.target;
+        if (target.tagName !== 'BUTTON') return;
 
-        // Header en modo lista (título + subtítulo)
-        setHeaderToList();
+        // Update active button style
+        if (DOMElements.subFilters.querySelector('.active')) {
+            DOMElements.subFilters.querySelector('.active').classList.remove('active');
+        }
+        target.classList.add('active');
 
-        detail.hidden = true;
-        detail.innerHTML = '';
-        grid.hidden = false;
+        const subFilter = target.dataset.filter;
+        state.currentSubcategory = subFilter;
 
-        const list = data.filter(byFilter);
-        showState({ loading: false, empty: list.length === 0, error: false });
-
-        updateResultsHeaderForList();
-        highlightActiveGroup();
-
-        // CHANGED: se elimina la clase "reveal" y los data-delay en las cards
-        grid.innerHTML = list
-            .map((d) => {
-                return `
-          <article class="card" role="listitem" data-id="${d.id}">
-            <div class="card__media">
-              <img src="${d.img}" alt="${d.name}">
-            </div>
-            <div class="card__body">
-              <h3 class="card__title">${d.name}</h3>
-              <p class="card__text">${d.description}</p>
-              <div class="card__actions">
-                <a href="#dest/${d.id}" class="btn btn--secondary card__more" data-id="${d.id}">View details</a>
-              </div>
-            </div>
-          </article>
-        `;
-            })
-            .join('');
-
-        setResultsState('list');
-        setBusy(false);
-
-        // REMOVED: no activar reveal sobre las nuevas cards del catálogo
-        // window.__Reveal?.observe(grid);
+        const searchTerm = DOMElements.searchBar.value.toLowerCase();
+        applyFilters(state.currentCategory, subFilter, searchTerm);
     }
 
-    // ---- Render detalle (estado DETALLE)
-    function renderDetail(item) {
-        if (!item) return;
-        setBusy(true);
+    function handleSearch(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        applyFilters(state.currentCategory, state.currentSubcategory, searchTerm);
+    }
 
-        // Header en modo detalle (solo botón Back arriba)
-        setHeaderToDetail(() => {
-            renderCards(destinations);
-            if (location.hash.startsWith('#dest/')) history.replaceState(null, '', ' ');
-        });
+    function applyFilters(category, subcategory, searchTerm) {
+        const lang = state.currentLanguage;
+        let results = state.destinations;
 
-        grid.hidden = true;
-        detail.hidden = false;
-
-        highlightActiveGroup();
-
-        // Construir link a Google Maps
-        let mapsHref = '';
-        if (item.coords && Array.isArray(item.coords) && item.coords.length === 2) {
-            const [lat, lng] = item.coords;
-            mapsHref = `https://www.google.com/maps?q=${encodeURIComponent(lat + ',' + lng)}`;
-        } else if (item.address) {
-            mapsHref = `https://www.google.com/maps?q=${encodeURIComponent(item.address)}`;
+        // Filter by category
+        if (category !== 'all') {
+            results = results.filter(dest => dest.cat === category);
         }
 
-        // Lámina informativa (PDF o imagen)
-        let sheetHTML = '';
-        if (item.infoSheet) {
-            const isPDF = /\.pdf(\?|#|$)/i.test(item.infoSheet);
-            // CHANGED: sin clase "reveal" ni data-delay; visible solo cuando se pulse el botón
-            sheetHTML = `
-    <div class="detail__sheet" id="infoSheetBlock" hidden>
-      ${isPDF
-                    ? `
-          <iframe class="pdf-frame" src="${item.infoSheet}" title="Information sheet"></iframe>
-          <p class="pdf-fallback">
-            <a href="${item.infoSheet}" target="_blank" rel="noopener">Abrir PDF en otra pestaña</a>
-          </p>
-        `
-                    : `<img src="${item.infoSheet}" alt="Information sheet">`
-                }
-    </div>`;
+        // Filter by subcategory
+        if (subcategory !== 'all') {
+            results = results.filter(dest => dest.subcat === subcategory);
         }
 
-        // Badges HTML
-        const badgesHTML =
-            Array.isArray(item.badges) && item.badges.length
-                ? `<div class="badges">
-             ${item.badges.map(b => `<span class="badge">${b}</span>`).join('')}
-           </div>`
-                : '';
-
-        // CHANGED: se eliminan todas las clases "reveal" del detalle
-        detail.innerHTML = `
-      <!-- Banner -->
-      <div class="detail__hero" style="background-image:url('${item.img}')">
-        <div class="detail__hero-content">
-          <h3 class="detail__title" id="detailTitle" tabindex="-1">${item.name}</h3>
-          <div class="detail__meta">
-            <span>${labels[item.cat]?.name || item.cat}</span>
-            ${item.subcat ? `<span>• ${subLabels[item.subcat] || item.subcat}</span>` : ''}
-          </div>
-        </div>
-      </div>
-
-      <!-- Cuerpo -->
-      <div class="detail__body" role="region" aria-labelledby="detailTitle">
-        <div class="detail__main">
-          <p class="detail__desc">${item.long || item.description || ''}</p>
-          ${sheetHTML}
-        </div>
-
-        <aside class="detail__aside">
-          ${badgesHTML}
-          ${item.address || mapsHref
-                ? `
-            <div class="detail__address">
-              <div class="detail__address-info">
-                <h4>Address</h4>
-                ${item.address ? `<p>${item.address}</p>` : ''}
-              </div>
-              ${mapsHref
-                    ? `
-                <a class="btn--map" href="${mapsHref}" target="_blank" rel="noopener">
-                  <img src="assets/img/iconos/location_on.svg" alt="" class="btn__icon">
-                  Open Maps
-                </a>`
-                    : ''
-                }
-            </div>`
-                : ''
-            }
-
-          <div class="detail__actions">
-            ${item.infoSheet
-                ? `<button class="btn" type="button" id="toggleSheetBtn">View information sheet</button>`
-                : ''
-            }
-          </div>
-        </aside>
-      </div>
-    `;
-
-        // Enfocar el título para a11y y desplazar la vista al inicio del catálogo
-        const title = document.getElementById('detailTitle');
-        if (title) {
-            // 1. Enfocar el título para lectores de pantalla, sin que el navegador desplace la vista.
-            title.focus({ preventScroll: true });
-            // 2. Desplazar manualmente la vista al inicio del panel de resultados.
-            resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Filter by search term
+        if (searchTerm) {
+            results = results.filter(dest =>
+                ((dest.name && dest.name[lang]) || (dest.name && dest.name.en) || '').toLowerCase().includes(searchTerm) ||
+                ((dest.description && dest.description[lang]) || (dest.description && dest.description.en) || '').toLowerCase().includes(searchTerm) ||
+                (Array.isArray(dest.badges?.[lang]) && dest.badges[lang].some(badge => badge.toLowerCase().includes(searchTerm)))
+            );
         }
 
-        // Toggle del PDF/imagen
-        const toggleBtn = document.getElementById('toggleSheetBtn');
-        const sheetBlock = document.getElementById('infoSheetBlock');
-        if (toggleBtn && sheetBlock) {
-            toggleBtn.addEventListener('click', () => {
-                const isHidden = sheetBlock.hasAttribute('hidden');
-                if (isHidden) {
-                    sheetBlock.removeAttribute('hidden');
-                    toggleBtn.textContent = 'Hide information sheet';
-                    sheetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // REMOVED: no se añade "reveal" ni se observa
-                    // sheetBlock.classList.add('reveal');
-                    // window.__Reveal?.observe(sheetBlock);
-                } else {
-                    sheetBlock.setAttribute('hidden', '');
-                    toggleBtn.textContent = 'View information sheet';
-                }
+        state.filteredDestinations = results;
+        renderDestinations(state.filteredDestinations);
+        updateMapMarkers(state.filteredDestinations);
+    }
+
+    function openDetailModal(destination) {
+        const lang = state.currentLanguage;
+
+        const name = (destination.name && destination.name[lang]) || (destination.name && destination.name.en) || destination.id;
+        const longDescription = (destination.long && destination.long[lang]) || (destination.long && destination.long.en) || '';
+        const badges = (destination.badges && destination.badges[lang]) || (destination.badges && destination.badges.en) || [];
+
+        DOMElements.modalBanner.style.backgroundImage = `url(${destination.img})`;
+        DOMElements.modalTitle.textContent = name;
+        DOMElements.modalDescription.textContent = longDescription;
+
+        // Populate badges
+        DOMElements.modalBadges.innerHTML = ''; // Clear previous badges
+        if (Array.isArray(badges) && badges.length > 0) {
+            const badgesTitle = document.createElement('p');
+            const featuresText = state.i18n[lang]?.modal_activities_features || 'Activities & Features:';
+            badgesTitle.innerHTML = `<strong>${featuresText}</strong>`;
+            DOMElements.modalBadges.appendChild(badgesTitle);
+
+            const badgesList = document.createElement('div');
+            badgesList.className = 'badges-list';
+            badges.forEach(badgeText => {
+                const badge = document.createElement('span');
+                badge.className = 'modal-badge';
+                badge.textContent = badgeText;
+                badgesList.appendChild(badge);
             });
+            DOMElements.modalBadges.appendChild(badgesList);
         }
 
-        setResultsState('detail');
-        setBusy(false);
+        DOMElements.modalAddress.textContent = destination.address;
 
-        // REMOVED: no activar reveal sobre el detalle
-        // window.__Reveal?.observe(detail);
+        // Build Google Maps URL from coordinates
+        if (destination.coords && destination.coords.length === 2) {
+            const [lat, lng] = destination.coords;
+            DOMElements.modalMapLink.href = `https://www.google.com/maps?q=${lat},${lng}`;
+            DOMElements.modalMapLink.style.display = 'inline-block';
+        } else {
+            DOMElements.modalMapLink.style.display = 'none';
+        }
+
+        // Handle info sheet link
+        if (destination.infoSheet) {
+            DOMElements.modalSheetLink.href = destination.infoSheet;
+            DOMElements.modalSheetLink.style.display = 'inline-block';
+        } else {
+            DOMElements.modalSheetLink.style.display = 'none';
+        }
+
+        DOMElements.modal.showModal();
     }
 
-    // ---- NEW: Function to render search results ----
-    function renderFromSearch(list, query) {
-        setBusy(true);
+    function handleCardClick(e) {
+        const card = e.target.closest('.destination-card, .destination-list-item');
+        if (!card) return;
 
-        // Ensure we are in list view
-        setHeaderToList();
-        detail.hidden = true;
-        detail.innerHTML = '';
-        grid.hidden = false;
-
-        // Update header for search results
-        const resultsTitle = getResultsTitle();
-        const resultsSubtitle = getResultsSubtitle();
-        if (resultsTitle && resultsSubtitle) {
-            if (query) {
-                resultsTitle.textContent = 'Search Results';
-                resultsSubtitle.textContent = `Found ${list.length} destinations for "${query}"`;
-            } else {
-                // If query is empty, revert to "All"
-                resultsTitle.textContent = labels.all.name;
-                resultsSubtitle.textContent = labels.all.desc;
-            }
+        const destinationId = card.dataset.id;
+        const destination = state.destinations.find(d => d.id === destinationId);
+        if (destination) {
+            openDetailModal(destination);
         }
-
-        // Update state messages (show empty message only if there was a query)
-        showState({ loading: false, empty: list.length === 0 && !!query, error: false });
-
-        // Deactivate sidebar filters
-        document.querySelectorAll('.filters__group').forEach(g => g.classList.remove('active'));
-        document.querySelectorAll('.filters__chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
-        if (!query) {
-            // If query is empty, reactivate "All"
-            document.querySelector('.filters__chip[data-cat="all"]')?.setAttribute('aria-pressed', 'true');
-            document.querySelector('.filters__group[data-cat="all"]')?.classList.add('active');
-        }
-
-        // Render the cards
-        grid.innerHTML = list
-            .map((d) => {
-                return `
-          <article class="card" role="listitem" data-id="${d.id}">
-            <div class="card__media">
-              <img src="${d.img}" alt="${d.name}">
-            </div>
-            <div class="card__body">
-              <h3 class="card__title">${d.name}</h3>
-              <p class="card__text">${d.description}</p>
-              <div class="card__actions">
-                <a href="#dest/${d.id}" class="btn btn--secondary card__more" data-id="${d.id}">View details</a>
-              </div>
-            </div>
-          </article>`;
-            }).join('');
-
-        setResultsState('list');
-        setBusy(false);
     }
 
-    // -----------------------------------------------
-    // INTERACCIÓN DEL SIDEBAR (categoría / expandir)
-    // -----------------------------------------------
-    // 1) Click en header de categoría: distinguir entre "catbtn" y "expand"
-    document.querySelectorAll('.filters__group-summary').forEach(sum => {
-        sum.addEventListener('click', e => {
-            // Bloquear el toggle nativo de <summary>
+    function handleMapPopupClick(e) {
+        if (e.target.classList.contains('map-popup-link')) {
             e.preventDefault();
-            e.stopPropagation();
-
-            const details = sum.parentElement;
-            const expandBtn = e.target.closest('.filters__expand');
-            const catBtn = e.target.closest('.filters__catbtn');
-
-            if (expandBtn) {
-                // Toggle manual del <details>
-                details.open = !details.open;
-                expandBtn.setAttribute('aria-expanded', details.open ? 'true' : 'false');
-                return;
+            const destinationId = e.target.dataset.id;
+            const destination = state.destinations.find(d => d.id === destinationId);
+            if (destination) {
+                openDetailModal(destination);
+                if (state.map) state.map.closePopup();
             }
+        }
+    }
 
-            if (catBtn) {
-                // Filtrar por categoría principal (sin subcategoría)
-                const cat = details.getAttribute('data-cat') || 'all';
-                active.cat = cat;
-                active.subcat = null;
+    function setLanguage(lang) {
+        if (!state.i18n[lang]) return;
 
-                // Reset visual de chips
-                document
-                    .querySelectorAll('.filters__chip')
-                    .forEach(c => c.setAttribute('aria-pressed', 'false'));
-                if (cat === 'all') {
-                    document
-                        .querySelector('.filters__chip[data-cat="all"]')
-                        ?.setAttribute('aria-pressed', 'true');
+        state.currentLanguage = lang;
+        document.documentElement.lang = lang;
+        localStorage.setItem('preferredLanguage', lang);
+
+        // Update static UI text from data-i18n attributes
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            if (state.i18n[lang][key]) {
+                el.innerHTML = state.i18n[lang][key];
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.dataset.i18nPlaceholder;
+            if (state.i18n[lang][key]) {
+                el.placeholder = state.i18n[lang][key];
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+            const key = el.dataset.i18nAriaLabel;
+            if (state.i18n[lang][key]) {
+                el.setAttribute('aria-label', state.i18n[lang][key]);
+            }
+        });
+
+        // Re-render dynamic content
+        applyFilters(state.currentCategory, state.currentSubcategory, DOMElements.searchBar.value.toLowerCase());
+        renderSubFilters(state.currentCategory);
+    }
+
+
+    // --- ANIMATIONS ---
+    function setupIntersectionObserver() {
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
                 }
+            });
+        }, { threshold: 0.1 });
 
-                renderCards(destinations);
-                resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        revealElements.forEach(el => observer.observe(el));
+    }
+
+    function handleLanguageSwitch(e) {
+        const target = e.target.closest('input[name="lang"]');
+        if (!target) return;
+        setLanguage(target.value);
+    }
+
+    function handleMobileMenuToggle(e) {
+        e.stopPropagation(); // Prevent the document click listener from firing immediately
+        const isOpen = DOMElements.headerDropdownMenu.classList.toggle('is-open');
+        DOMElements.mobileMenuToggle.setAttribute('aria-expanded', String(isOpen));
+
+        // Move the controls to the dropdown menu when it's open, and back when it's closed.
+        // This avoids cloning and issues with event listeners or duplicate IDs.
+        if (isOpen) {
+            DOMElements.headerDropdownMenu.appendChild(DOMElements.headerControls);
+        } else {
+            // When closing, move controls back to their original place in the header for desktop view.
+            DOMElements.mobileMenuToggle.insertAdjacentElement('beforebegin', DOMElements.headerControls);
+        }
+    }
+
+    // --- GAME LOGIC ---
+    const gameState = {
+        rows: 3,
+        cols: 3,
+        isSolved: false,
+        rotations: []
+    };
+
+    function createGameGrid() {
+        if (!DOMElements.gameGrid) return;
+
+        DOMElements.gameGrid.innerHTML = '';
+        DOMElements.gameGrid.style.gridTemplateColumns = `repeat(${gameState.cols}, 1fr)`;
+        DOMElements.gameGrid.style.gridTemplateRows = `repeat(${gameState.rows}, 1fr)`;
+        gameState.rotations = [];
+
+        const totalCells = gameState.rows * gameState.cols;
+        for (let i = 0; i < totalCells; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'game-cell';
+            cell.dataset.index = i;
+            cell.tabIndex = 0; // For keyboard accessibility
+
+            const row = Math.floor(i / gameState.cols);
+            const col = i % gameState.cols;
+
+            // Adjust background position and size to show a slice of the logo
+            const bgPosX = (gameState.cols > 1) ? (col * 100) / (gameState.cols - 1) : 0;
+            const bgPosY = (gameState.rows > 1) ? (row * 100) / (gameState.rows - 1) : 0;
+            cell.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
+            cell.style.backgroundSize = `${gameState.cols * 100}% ${gameState.rows * 100}%`;
+
+            DOMElements.gameGrid.appendChild(cell);
+            gameState.rotations.push(0);
+        }
+    }
+
+    function shuffleGameGrid() {
+        if (!DOMElements.gameGrid) return;
+
+        gameState.isSolved = false;
+        DOMElements.communityProjectGame.classList.remove('game-solved-state', 'game-message-hidden');
+        const cells = DOMElements.gameGrid.children;
+        let isStillSolved = true;
+
+        for (let i = 0; i < cells.length; i++) {
+            const randomRotation = Math.floor(Math.random() * 4) * 90;
+            cells[i].style.transform = `rotate(${randomRotation}deg)`;
+            gameState.rotations[i] = randomRotation;
+            if (randomRotation !== 0) {
+                isStillSolved = false;
+            }
+        }
+
+        // Ensure it's not solved from the start
+        if (isStillSolved && cells.length > 0) {
+            const randomIndex = Math.floor(Math.random() * cells.length);
+            const randomRotation = (Math.floor(Math.random() * 3) + 1) * 90; // 90, 180, or 270
+            cells[randomIndex].style.transform = `rotate(${randomRotation}deg)`;
+            gameState.rotations[randomIndex] = randomRotation;
+        }
+    }
+
+    function checkWinCondition() {
+        if (gameState.isSolved) return; // Don't re-check if already solved
+        const isWon = gameState.rotations.every(rot => rot % 360 === 0);
+        if (isWon) {
+            gameState.isSolved = true;
+            DOMElements.communityProjectGame.classList.add('game-solved-state');
+            // Hide message after a delay, but keep the glow effect
+            setTimeout(() => {
+                DOMElements.communityProjectGame.classList.add('game-message-hidden');
+            }, 2500);
+        }
+    }
+
+    function handleCellInteraction(cell) {
+        if (gameState.isSolved || !cell) return;
+
+        const index = parseInt(cell.dataset.index, 10);
+        const newRotation = (gameState.rotations[index] + 90);
+
+        gameState.rotations[index] = newRotation;
+        cell.style.transform = `rotate(${newRotation}deg)`;
+
+        checkWinCondition();
+    }
+
+    function initGame() {
+        if (!DOMElements.gameGrid) return;
+        createGameGrid();
+        shuffleGameGrid();
+    }
+
+    // --- INITIALIZATION ---
+    function setupEventListeners() {
+        DOMElements.filters.addEventListener('click', handleFilter);
+        DOMElements.subFilters.addEventListener('click', handleSubFilter);
+        DOMElements.viewSwitcher.addEventListener('click', handleViewSwitch);
+        DOMElements.searchBar.addEventListener('input', handleSearch);
+        DOMElements.languageSwitcher.addEventListener('change', handleLanguageSwitch);
+        DOMElements.grid.addEventListener('click', handleCardClick);
+        DOMElements.destinationsList.addEventListener('click', handleCardClick);
+        DOMElements.modalCloseBtn.addEventListener('click', () => DOMElements.modal.close());
+        DOMElements.mobileMenuToggle.addEventListener('click', handleMobileMenuToggle);
+
+        // Game Event Listeners
+        if (DOMElements.gameGrid) {
+            DOMElements.shuffleBtn.addEventListener('click', shuffleGameGrid);
+            DOMElements.gameGrid.addEventListener('click', (e) => handleCellInteraction(e.target.closest('.game-cell')));
+            DOMElements.gameGrid.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    const cell = e.target.closest('.game-cell');
+                    if (cell) {
+                        e.preventDefault(); // Prevent page scroll on space
+                        handleCellInteraction(cell);
+                    }
+                }
+            });
+        }
+        DOMElements.scrollToTopBtn.addEventListener('click', () => {
+            DOMElements.destinationsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+        document.addEventListener('click', handleMapPopupClick); // Listen on document for popups
+
+        // Close mobile menu on outside click
+        document.addEventListener('click', (e) => {
+            if (DOMElements.headerDropdownMenu.classList.contains('is-open') && !DOMElements.mobileMenuToggle.contains(e.target) && !DOMElements.headerDropdownMenu.contains(e.target) && !DOMElements.headerControls.contains(e.target)) {
+                DOMElements.headerDropdownMenu.classList.remove('is-open');
+                DOMElements.mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                // Also move controls back
+                DOMElements.mobileMenuToggle.insertAdjacentElement('beforebegin', DOMElements.headerControls);
+            }
+        });
+
+        // Handle window resize to ensure controls are in the correct place
+        const mediaQuery = window.matchMedia('(min-width: 769px)');
+        mediaQuery.addEventListener('change', (e) => {
+            if (e.matches) { // If we are on desktop view
+                // Ensure controls are in the main header, not the dropdown
+                DOMElements.mobileMenuToggle.insertAdjacentElement('beforebegin', DOMElements.headerControls);
+                // And close the mobile menu if it was open
+                if (DOMElements.headerDropdownMenu.classList.contains('is-open')) {
+                    DOMElements.headerDropdownMenu.classList.remove('is-open');
+                    DOMElements.mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+
+        // Handle hiding header on scroll
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const headerHeight = DOMElements.siteHeader.offsetHeight;
+            const currentScrollY = window.scrollY;
+
+            // Do not hide header if mobile menu is open
+            if (DOMElements.headerDropdownMenu.classList.contains('is-open')) {
                 return;
             }
-        });
-    });
 
-    // 2) Chips de subcategoría
-    document.querySelectorAll('.filters__chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            const cat = chip.getAttribute('data-cat');
-            const sub = chip.getAttribute('data-subcat') || null;
-
-            // Al seleccionar subcategoría, abrir su grupo por si estuviera cerrado
-            const group = document.querySelector(`.filters__group[data-cat="${cat}"]`);
-            if (group && !group.open) {
-                group.open = true;
-                group.querySelector('.filters__expand')?.setAttribute('aria-expanded', 'true');
+            if (currentScrollY > lastScrollY && currentScrollY > headerHeight) {
+                // Scrolling down
+                DOMElements.siteHeader.classList.add('site-header--hidden');
+            } else if (currentScrollY < lastScrollY) {
+                // Scrolling up
+                DOMElements.siteHeader.classList.remove('site-header--hidden');
             }
 
-            // Reset chips
-            document.querySelectorAll('.filters__chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
+            lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
 
-            if (cat === 'all') {
-                active.cat = 'all';
-                active.subcat = null;
-                chip.setAttribute('aria-pressed', 'true');
+            // Handle scroll-to-top button visibility
+            const scrollThreshold = DOMElements.destinationsSection.offsetTop + 200; // Show after scrolling 200px into the section
+            if (window.scrollY > scrollThreshold) {
+                DOMElements.scrollToTopBtn.classList.add('visible');
             } else {
-                chip.setAttribute('aria-pressed', 'true');
-                active.cat = cat;
-                active.subcat = sub;
+                DOMElements.scrollToTopBtn.classList.remove('visible');
             }
-            renderCards(destinations);
-            resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
-    });
-
-    // Reset global
-    resetBtn?.addEventListener('click', () => {
-        active.cat = 'all';
-        active.subcat = null;
-        document.querySelectorAll('.filters__chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
-        document.querySelector('.filters__chip[data-cat="all"]')?.setAttribute('aria-pressed', 'true');
-        renderCards(destinations);
-        resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    // Delegación para "View details"
-    document.addEventListener('click', e => {
-        const a = e.target.closest('.card__more');
-        if (!a) return;
-        e.preventDefault();
-        const id = a.getAttribute('data-id');
-        const item = destinations.find(x => x.id === id);
-        if (item) {
-            renderDetail(item);
-            // set hash para deep-link
-            location.hash = `#dest/${id}`;
-        }
-    });
-
-    // Router por hash (abrir detalle si URL ya viene con #dest/ID)
-    function tryOpenFromHash() {
-        if (!location.hash.startsWith('#dest/')) return false;
-        const id = location.hash.split('/')[1];
-        const item = destinations.find(x => x.id === id);
-        if (item) {
-            renderDetail(item);
-            return true;
-        }
-        return false;
     }
 
-    // ---- Load JSON
-    async function loadData() {
-        try {
-            showState({ loading: true, empty: false, error: false });
-            setBusy(true);
-            const res = await fetch('assets/data/destinations.json', { cache: 'no-cache' });
-            if (!res.ok) throw new Error(`Failed to load JSON (${res.status})`);
-            destinations = await res.json();
 
-            // CHANGED: expone datos para el buscador del header
-            window.DESTINATIONS = destinations;
+    async function init() {
+        // 1. Determine initial language and fetch translations
+        const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        await fetchI18n();
 
-            renderCounts(destinations);
-            renderCards(destinations);
+        // 2. Update splash screen text early
+        DOMElements.splashScreen.querySelector('h1').textContent = state.i18n[preferredLanguage]?.splash_title || 'Discover Bio Bío';
 
-            // Sincronizar aria-expanded de flechas con <details open>
-            document.querySelectorAll('.filters__group').forEach(g => {
-                g.querySelector('.filters__expand')?.setAttribute('aria-expanded', g.open ? 'true' : 'false');
-            });
+        // 3. Fetch main data
+        await fetchDestinations();
 
-            tryOpenFromHash();
-            showState({ loading: false, empty: false, error: false });
-            setBusy(false);
+        // 4. Set up language switcher state
+        const langRadio = document.getElementById(`lang-${preferredLanguage}`);
+        if (langRadio) langRadio.checked = true;
 
-            // Notificar a otros módulos que los datos están disponibles
-            window.dispatchEvent(new CustomEvent('data:loaded', { detail: destinations }));
-        } catch (err) {
-            console.error(err);
-            showState({ loading: false, empty: false, error: true });
-            setBusy(false);
-        }
+        // 5. Initialize map
+        initMap();
+
+        // 6. Set language and perform initial render of all content
+        setLanguage(preferredLanguage);
+
+        // 7. Setup listeners and animations
+        setupEventListeners();
+        setupIntersectionObserver();
+        // 8. Initialize the game
+        initGame();
+
+        // 8. Hide splash screen
+        setTimeout(() => {
+            DOMElements.splashScreen.classList.add('hidden');
+        }, 500);
     }
 
-    // ---- Init
-    loadData();
+    // --- RUN ---
+    init(); // The script is deferred, so the DOM is ready when this runs.
 
-    // Expose render function for search module
-    window.renderFromSearch = renderFromSearch;
 })();
-
-// ============================
-// Buscador del header (sin cambiar tu HTML)
-// ============================
-(() => {
-    const $form = document.querySelector('.header__search');
-    const $input = document.getElementById('search');
-
-    if (!$form || !$input) return;
-
-    // 1) Fuente de datos (ajusta si usas otro nombre global)
-    let DATA = window.DESTINATIONS || window.destinations || [];
-
-    // Si tu JSON se carga asincrónicamente en otro módulo, emite este evento:
-    // window.dispatchEvent(new CustomEvent('data:loaded', { detail: arrayDeDestinos }));
-    window.addEventListener('data:loaded', (e) => {
-        if (Array.isArray(e.detail)) DATA = e.detail;
-    });
-
-    // 2) Normalizador (minúsculas + sin tildes)
-    const norm = (s) =>
-        (s || '')
-            .toString()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase()
-            .trim();
-
-    // 3) Lógica de búsqueda sobre varios campos
-    function searchData(query, data) {
-        const q = norm(query);
-        if (!q) return data; // Return all if query is empty
-
-        return data.filter((d) => {
-            const name = norm(d.name);
-            const description = norm(d.description);
-            const longDesc = norm(d.long);
-            const cat = norm(d.cat);
-            const subcat = norm(d.subcat);
-            const badges = Array.isArray(d.badges) ? d.badges.map(norm).join(' ') : '';
-            const address = norm(d.address);
-
-            const haystack = [name, description, longDesc, cat, subcat, badges, address].join(' ');
-            return haystack.includes(q);
-        });
-    }
-
-    // 5) Debounce
-    const debounce = (fn, ms = 200) => {
-        let t;
-        return (...args) => {
-            clearTimeout(t);
-            t = setTimeout(() => fn(...args), ms);
-        };
-    };
-
-    // 6) Handler principal
-    function handleQuery(q) {
-        const base = Array.isArray(DATA) ? DATA : [];
-        const results = searchData(q, base);
-
-        // Aviso opcional a otras partes de la app
-        window.dispatchEvent(new CustomEvent('search:results', { detail: { query: q, results } }));
-
-        if (typeof window.renderFromSearch === 'function') {
-            window.renderFromSearch(results, q);
-        } else {
-            console.error("Search render function not found. Catalog module might not be loaded correctly.");
-        }
-    }
-
-    // 7) Eventos (submit + input con debounce)
-    $form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        handleQuery($input.value);
-    });
-
-    $input.addEventListener(
-        'input',
-        debounce(() => {
-            handleQuery($input.value);
-        }, 200)
-    );
-
-    // 8) Calidad de vida: ESC limpia y muestra todo
-    $input.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            $input.value = '';
-            handleQuery('');
-            $input.blur();
-        }
-    });
-
-    // 9) Estado inicial (opcional)
-    // if (Array.isArray(DATA) && DATA.length) render(DATA);
-})();
-
-// ===== Parallax Rally Biobío (3 capas) =====
-(() => {
-    const root = document.querySelector('[data-parallax]');
-    if (!root) return;
-
-    const layers = Array.from(root.querySelectorAll('.parallax-banner__layer'));
-    if (!layers.length) return;
-
-    // Configura fuerzas sutiles (puedes ajustar con data-speed en HTML)
-    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-
-    let ticking = false;
-    let inView = false;
-    let lastY = window.scrollY;
-
-    // Calcula progreso del banner en viewport (0 cuando empieza a entrar, 1 cuando sale)
-    function getProgress() {
-        const rect = root.getBoundingClientRect();
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-        // Rango donde animamos: desde que entra hasta que sale completamente
-        const start = vh;           // justo antes de entrar por abajo
-        const end = -rect.height;   // cuando ya salió por arriba
-        const p = (rect.top - end) / (start - end);
-        return clamp(1 - p, 0, 1);  // 0..1
-    }
-
-    function update() {
-        ticking = false;
-        if (!inView) return;
-
-        const progress = getProgress(); // 0..1
-        // Traducimos levemente en Y cada capa usando su speed (en %) del alto
-        layers.forEach(layer => {
-            const speed = parseFloat(layer.dataset.speed || '0.1'); // 0.05 - 0.25 recomendado
-            const translate = ((progress - 0.5) * 2) * (speed * 10); // -speed..+speed en %
-            layer.style.transform = `translateY(${translate}%)`;
-        });
-    }
-
-    function requestTick() {
-        if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(update);
-        }
-    }
-
-    // Scroll/resize listeners
-    function onScroll() {
-        const y = window.scrollY;
-        if (y === lastY) return;
-        lastY = y;
-        requestTick();
-    }
-    function onResize() { requestTick(); }
-
-    // Solo animar cuando el banner esté en viewport
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            inView = entry.isIntersecting;
-            if (inView) requestTick();
-        });
-    }, { root: null, threshold: [0, 0.01, 0.5, 0.99, 1] });
-
-    io.observe(root);
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-
-    // Fallback si usuario prefiere menos movimiento
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq.matches) {
-        layers.forEach(l => l.style.transform = 'none');
-        window.removeEventListener('scroll', onScroll);
-        window.removeEventListener('resize', onResize);
-        io.disconnect();
-    }
-})();
-
-
-// ===== Parallax Rally Biobío (más notorio + mouse en desktop) =====
-document.addEventListener('DOMContentLoaded', () => {
-    const section = document.getElementById('banner-rally');
-    if (!section) return;
-
-    const root = section.querySelector('.parallax-banner');
-    const bg = section.querySelector('.layer--bg');
-    const mid = section.querySelector('.layer--mid');
-    const fg = section.querySelector('.layer--fg');
-    if (!root || !bg || !mid || !fg) return;
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    let ticking = false;
-    let mouseY = 0;  // -1..1 relativo al centro del banner (desktop)
-
-    function getRanges() {
-        const h = root.getBoundingClientRect().height || 476; // fallback
-        // Rango base en px según alto del banner (más alto => más movimiento)
-        // móvil (<=768px): rangos moderados, desktop: más notorios
-        const isDesktop = window.matchMedia('(min-width: 769px)').matches;
-        const scale = isDesktop ? 0.10 : 0.06; // 10% vs 6% del alto total repartido entre capas
-
-        // Distribución por capa (auto > fondo > contenido)
-        const R_MID = Math.min(64, h * scale);        // auto
-        const R_BG = Math.min(36, h * (scale * 0.55)); // fondo
-        const R_FG = Math.min(28, h * (scale * 0.45)); // texto/logo
-
-        return { R_BG, R_MID, R_FG, isDesktop };
-    }
-
-    function applyParallax() {
-        ticking = false;
-
-        const rect = root.getBoundingClientRect();
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-
-        // Distancia entre centros (scroll)
-        const centerEl = rect.top + rect.height / 2;
-        const centerVp = vh / 2;
-        const delta = centerVp - centerEl;
-
-        // Normaliza scroll a -1..1
-        const tScroll = Math.max(-1, Math.min(1, delta / (vh / 2)));
-
-        // Rango dinámico
-        const { R_BG, R_MID, R_FG, isDesktop } = getRanges();
-
-        // Mezcla scroll + mouse (mouseY ya es -1..1)
-        // Peso del mouse solo en desktop para no molestar en móvil
-        const mouseWeight = isDesktop ? 0.35 : 0.0;
-
-        const tBG = tScroll * 1.0 + mouseY * mouseWeight * 0.4;
-        const tMID = tScroll * 1.2 + mouseY * mouseWeight * 1.0; // el auto reacciona más
-        const tFG = tScroll * 0.8 + mouseY * mouseWeight * 0.25;
-
-        bg.style.transform = `translate3d(0, ${tBG * R_BG}px, 0)`;
-        mid.style.transform = `translate3d(0, ${tMID * R_MID}px, 0)`;
-        fg.style.transform = `translate3d(0, ${tFG * R_FG}px, 0)`;
-    }
-
-    function onScrollResize() {
-        if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(applyParallax);
-        }
-    }
-
-    // Parallax por mouse (solo desktop)
-    function onMouseMove(e) {
-        const r = root.getBoundingClientRect();
-        const y = e.clientY - (r.top + r.height / 2);
-        // Normaliza a -1..1 (suave)
-        mouseY = Math.max(-1, Math.min(1, y / (r.height / 2)));
-        onScrollResize();
-    }
-
-    window.addEventListener('scroll', onScrollResize, { passive: true });
-    window.addEventListener('resize', onScrollResize);
-
-    // Activar mouse en desktop
-    const mqDesktop = window.matchMedia('(min-width: 769px)');
-    function toggleMouseListener(e) {
-        if (e.matches) {
-            root.addEventListener('mousemove', onMouseMove);
-        } else {
-            root.removeEventListener('mousemove', onMouseMove);
-            mouseY = 0;
-        }
-        onScrollResize();
-    }
-    mqDesktop.addEventListener('change', toggleMouseListener);
-    toggleMouseListener(mqDesktop); // set inicial
-
-    // Primera ejecución
-    applyParallax();
-});
-
-
-// ===== Parallax + Blur/Fade para HERO =====
-// ADDED: efecto parallax + blur + fade al hacer scroll (reversible)
-(() => {
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-
-    // Respeta prefers-reduced-motion
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
-
-    let ticking = false;
-
-    const update = () => {
-        const y = window.scrollY || document.documentElement.scrollTop;
-
-        // Configuración de intensidad (ajusta a gusto)
-        const maxRange = 400;                 // ADDED: rango (px) sobre el que se aplica el efecto
-        const t = Math.min(1, Math.max(0, y / maxRange)); // progreso 0→1 según scroll
-        const parallax = y * -0.30;           // ADDED: mueve el fondo más lento hacia arriba
-        const blur = 8 * t;                   // ADDED: hasta 8px de blur
-        const opacity = 1 - (0.6 * t);        // ADDED: reduce opacidad hasta 40%
-        const scale = 1 + (0.06 * t);         // ADDED: leve zoom para profundidad
-
-        hero.style.setProperty('--hero-parallax', parallax.toFixed(2) + 'px');
-        hero.style.setProperty('--hero-blur', blur.toFixed(2) + 'px');
-        hero.style.setProperty('--hero-opacity', opacity.toFixed(3));
-        hero.style.setProperty('--hero-scale', scale.toFixed(3));
-
-        ticking = false;
-    };
-
-    const onScroll = () => {
-        if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(update);
-        }
-    };
-
-    // Inicializa en carga y en scroll
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('load', update);
-})();
-
-async function loadData() {
-    try {
-        showState({ loading: true, empty: false, error: false });
-        setBusy(true);
-
-        const res = await fetch('assets/data/destinations.json', { cache: 'no-cache' });
-        if (!res.ok) throw new Error(`Failed to load JSON (${res.status})`);
-
-        const text = await res.text();
-        try {
-            destinations = JSON.parse(text);
-        } catch (e) {
-            console.error('JSON inválido:', e);
-            // Muestra un extracto alrededor del punto del error si existe e.position
-            const pos = e.position ?? (e.message.match(/position (\d+)/)?.[1] | 0);
-            console.error('Cerca de:', text.slice(Math.max(0, pos - 80), pos + 80));
-            throw e;
-        }
-
-        renderCounts(destinations);
-        renderCards(destinations);
-
-        document.querySelectorAll('.filters__group').forEach(g => {
-            g.querySelector('.filters__expand')?.setAttribute('aria-expanded', g.open ? 'true' : 'false');
-        });
-
-        tryOpenFromHash();
-        showState({ loading: false, empty: false, error: false });
-    } catch (err) {
-        console.error(err);
-        showState({ loading: false, empty: false, error: true });
-    } finally {
-        setBusy(false);
-    }
-}
