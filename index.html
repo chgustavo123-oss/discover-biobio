@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discover Bio Bío</title>
-    <meta name="description" content="Digital tourism platform to explore the cultural and natural riches of the Bio Bío Region, Chile.">
+    <meta name="description"
+        content="Digital tourism platform to explore the cultural and natural riches of the Bio Bío Region, Chile.">
     <link rel="icon" href="assets/img/favicon-discover.svg" type="image/svg+xml">
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- Leaflet.js for interactive map -->
@@ -17,8 +18,15 @@
 
     <!-- Splash Screen -->
     <div id="splash-screen">
-        <div class="spinner"></div>
-        <h1 data-i18n="splash_title">Discover Bio Bío</h1>
+        <div class="splash-content-wrapper">
+            <img class="logo-light splash-logo" src="assets/img/logo-turismo-ingles-arreglo.svg"
+                alt="Discover Bio Bío Logo">
+            <img class="logo-dark splash-logo" src="assets/img/logo-turismo-ingles-dark.svg"
+                alt="Discover Bio Bío Logo">
+            <div class="loader-bar">
+                <div class="loader-bar-inner"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
@@ -28,8 +36,8 @@
                 <img class="logo-light" src="assets/img/logo-turismo-ingles-arreglo.svg" alt="Discover Bio Bío Logo">
                 <img class="logo-dark" src="assets/img/logo-turismo-ingles-dark.svg" alt="Discover Bio Bío Logo">
             </a>
-            <input type="search" id="search-bar" placeholder="Search destination..."
-                aria-label="Search destination" data-i18n-placeholder="search_placeholder">
+            <input type="search" id="search-bar" placeholder="Search destination..." aria-label="Search destination"
+                data-i18n-placeholder="search_placeholder">
             <div class="header-controls">
                 <fieldset class="theme-switcher">
                     <legend class="sr-only">Theme Switcher</legend>
@@ -70,7 +78,8 @@
             <div class="hero-blob"></div>
             <div class="promo-content">
                 <h2 id="hero-title" class="reveal" data-i18n="hero_title">Explore the Wonders of the Bio Bío Region</h2>
-                <p class="reveal" data-i18n="hero_subtitle">From breathtaking natural parks to vibrant cultural heritage, your next adventure starts here.</p>
+                <p class="reveal" data-i18n="hero_subtitle">From breathtaking natural parks to vibrant cultural
+                    heritage, your next adventure starts here.</p>
                 <a href="#destinations" class="btn reveal" data-i18n="discover_destinations">Discover Destinations</a>
             </div>
         </section>
@@ -81,9 +90,12 @@
                 <div class="destinations-header">
                     <h2 class="section-title reveal" data-i18n="our_destinations">Our Destinations</h2>
                     <div id="view-switcher" class="view-switcher reveal">
-                        <button class="view-btn active" data-view="grid" aria-label="Grid view" data-i18n-aria-label="view_grid">Grid</button>
-                        <button class="view-btn" data-view="list" aria-label="List view" data-i18n-aria-label="view_list">List</button>
-                        <button class="view-btn" data-view="map" aria-label="Map view" data-i18n-aria-label="view_map">Map</button>
+                        <button class="view-btn active" data-view="grid" aria-label="Grid view"
+                            data-i18n-aria-label="view_grid">Grid</button>
+                        <button class="view-btn" data-view="list" aria-label="List view"
+                            data-i18n-aria-label="view_list">List</button>
+                        <button class="view-btn" data-view="map" aria-label="Map view"
+                            data-i18n-aria-label="view_map">Map</button>
                     </div>
                 </div>
 
@@ -91,14 +103,17 @@
                 <nav id="filters" class="filters" aria-label="Destination filters">
                     <button class="filter-btn active reveal" data-filter="all" data-i18n="filter_all">All</button>
                     <button class="filter-btn reveal" data-filter="nature" data-i18n="filter_nature">Nature</button>
-                    <button class="filter-btn reveal" data-filter="heritage" data-i18n="filter_heritage">Heritage</button>
+                    <button class="filter-btn reveal" data-filter="heritage"
+                        data-i18n="filter_heritage">Heritage</button>
                     <button class="filter-btn reveal" data-filter="culture" data-i18n="filter_culture">Culture</button>
-                    <button class="filter-btn reveal" data-filter="gastronomy" data-i18n="filter_gastronomy">Gastronomy</button>
+                    <button class="filter-btn reveal" data-filter="gastronomy"
+                        data-i18n="filter_gastronomy">Gastronomy</button>
                     <button class="filter-btn reveal" data-filter="urban" data-i18n="filter_urban">Urban</button>
                 </nav>
 
                 <!-- Sub-category Filters (populated by JS) -->
-                <nav id="sub-filters" class="sub-filters" aria-label="Destination sub-filters" style="display: none;"></nav>
+                <nav id="sub-filters" class="sub-filters" aria-label="Destination sub-filters" style="display: none;">
+                </nav>
 
                 <!-- Interactive Map Container -->
                 <div id="map-container" class="reveal" style="display: none;"></div>
@@ -112,7 +127,8 @@
                 </div>
 
                 <!-- Scroll to Top Button -->
-                <button id="scroll-to-top-btn" class="scroll-to-top-btn" title="Volver arriba" aria-label="Volver al inicio de destinos">&#8679;</button>
+                <button id="scroll-to-top-btn" class="scroll-to-top-btn" title="Volver arriba"
+                    aria-label="Volver al inicio de destinos">&#8679;</button>
             </div>
         </section>
 
@@ -121,9 +137,14 @@
             <div class="container">
                 <div class="community-project-content">
                     <div class="community-project-text">
-                        <h2 id="community-project-title" class="section-title reveal" data-i18n="community_project_title">A Project Built in Community</h2>
-                        <p class="lead-paragraph reveal" data-i18n="community_project_lead">This website is the result of the joint effort of students, faculty, the English Program and the School of Tourism at DUOC UC.</p>
-                        <p class="reveal" data-i18n="community_project_body">More than just an academic project, it represents our commitment to the sustainable development of tourism in the Bio Bío Region and to sharing its cultural and natural richness with the world.</p>
+                        <h2 id="community-project-title" class="section-title reveal"
+                            data-i18n="community_project_title">A Project Built in Community</h2>
+                        <p class="lead-paragraph reveal" data-i18n="community_project_lead">This website is the result
+                            of the joint effort of students, faculty, the English Program and the School of Tourism at
+                            DUOC UC.</p>
+                        <p class="reveal" data-i18n="community_project_body">More than just an academic project, it
+                            represents our commitment to the sustainable development of tourism in the Bio Bío Region
+                            and to sharing its cultural and natural richness with the world.</p>
                         <div class="attributions reveal">
                             <strong data-i18n="community_project_attribution">With contributions from:</strong>
                             <ul>
@@ -137,11 +158,14 @@
                     </div>
                     <div class="community-project-game reveal">
                         <div class="game-intro">
-                            <p class="game-instructions" data-i18n="game_instructions">Gira cada cuadrado 90° hasta orientar correctamente la imagen.</p>
-                            <button id="shuffle-btn" class="btn btn-accent" data-i18n="game_label_shuffle">Mezclar</button>
+                            <p class="game-instructions" data-i18n="game_instructions">Gira cada cuadrado 90° hasta
+                                orientar correctamente la imagen.</p>
+                            <button id="shuffle-btn" class="btn btn-accent"
+                                data-i18n="game_label_shuffle">Mezclar</button>
                         </div>
                         <div id="game-grid" class="game-grid" role="grid" aria-label="Game puzzle grid"></div>
-                        <div id="game-win-message" class="game-win-message" role="alert" aria-live="assertive" data-i18n="game_solved">¡Logo completado!</div>
+                        <div id="game-win-message" class="game-win-message" role="alert" aria-live="assertive"
+                            data-i18n="game_solved">¡Logo completado!</div>
                     </div>
                 </div>
             </div>
@@ -151,10 +175,14 @@
         <section class="rally-promo-section" role="region" aria-labelledby="rally-promo-title">
             <div class="container">
                 <div class="rally-promo-content">
-                    <img src="assets/img/logo-rally-chile.png" alt="WRC Rally Chile Bio Bío Logo" class="rally-promo-logo reveal">
-                    <h2 id="rally-promo-title" class="section-title reveal" data-i18n="rally_promo_title">WRC Rally Chile Bio Bío</h2>
-                    <p class="reveal" data-i18n="rally_promo_text">Feel the adrenaline of the World Rally Championship in the stunning landscapes of the Bio Bío Region. An unmissable event for speed lovers!</p>
-                    <a href="https://rallychilebiobio.com/" target="_blank" rel="noopener noreferrer" class="btn btn-accent reveal" data-i18n="rally_promo_cta">Visit Official Site</a>
+                    <img src="assets/img/logo-rally-chile.png" alt="WRC Rally Chile Bio Bío Logo"
+                        class="rally-promo-logo reveal">
+                    <h2 id="rally-promo-title" class="section-title reveal" data-i18n="rally_promo_title">WRC Rally
+                        Chile Bio Bío</h2>
+                    <p class="reveal" data-i18n="rally_promo_text">Feel the adrenaline of the World Rally Championship
+                        in the stunning landscapes of the Bio Bío Region. An unmissable event for speed lovers!</p>
+                    <a href="https://rallychilebiobio.com/" target="_blank" rel="noopener noreferrer"
+                        class="btn btn-accent reveal" data-i18n="rally_promo_cta">Visit Official Site</a>
                 </div>
             </div>
         </section>
@@ -164,7 +192,8 @@
     <!-- Detail Modal -->
     <dialog id="detail-modal">
         <div class="modal-content">
-            <button id="modal-close-btn" class="modal-close-btn" aria-label="Close" data-i18n-aria-label="modal_close">&times;</button>
+            <button id="modal-close-btn" class="modal-close-btn" aria-label="Close"
+                data-i18n-aria-label="modal_close">&times;</button>
             <div id="modal-banner" class="modal-banner"></div>
             <div class="modal-body">
                 <h2 id="modal-title"></h2>
@@ -172,8 +201,10 @@
                 <div id="modal-badges" class="modal-badges-container"></div>
                 <p><strong data-i18n="modal_address">Address:</strong> <span id="modal-address"></span></p>
                 <div class="modal-actions">
-                    <a id="modal-map-link" href="#" target="_blank" rel="noopener noreferrer" class="btn" data-i18n="modal_map_link">View on Google Maps</a>
-                    <a id="modal-sheet-link" href="#" target="_blank" rel="noopener noreferrer" class="btn" style="display: none;" data-i18n="modal_sheet_link">View Sheet</a>
+                    <a id="modal-map-link" href="#" target="_blank" rel="noopener noreferrer" class="btn"
+                        data-i18n="modal_map_link">View on Google Maps</a>
+                    <a id="modal-sheet-link" href="#" target="_blank" rel="noopener noreferrer" class="btn"
+                        style="display: none;" data-i18n="modal_sheet_link">View Sheet</a>
                 </div>
             </div>
         </div>
@@ -191,7 +222,8 @@
                 <a href="#destinations" data-i18n="footer_link_destinations">Destinations</a>
                 <a href="https://www.duoc.cl" target="_blank" rel="noopener noreferrer">DUOC UC</a>
             </nav>
-            <p class="footer-acknowledgements" data-i18n="footer_acknowledgements">Special thanks to all students, teachers, and collaborators for their dedication.</p>
+            <p class="footer-acknowledgements" data-i18n="footer_acknowledgements">Special thanks to all students,
+                teachers, and collaborators for their dedication.</p>
             <p class="footer-copy" data-i18n="footer_copy">&copy; 2024 Discover Bio Bío. A DUOC UC project.</p>
         </div>
     </footer>

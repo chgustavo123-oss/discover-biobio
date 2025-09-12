@@ -693,9 +693,6 @@
         const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
         await fetchI18n();
 
-        // 2. Update splash screen text early
-        DOMElements.splashScreen.querySelector('h1').textContent = state.i18n[preferredLanguage]?.splash_title || 'Discover Bio Bío';
-
         // 3. Fetch main data
         await fetchDestinations();
 
