@@ -506,46 +506,6 @@
         "infoSheet": "assets/sheets/lagoons.pdf"
     },
     {
-        "id": "laguna-cristalina",
-        "name": {
-            "en": "Cristalina Lagoon",
-            "es": "Laguna Cristalina"
-        },
-        "cat": "nature",
-        "subcat": "lagoons",
-        "img": "assets/img/destinations/laguna-cristalina.avif",
-        "description": {
-            "en": "Sacred lagoon discovered in 1912, perfect for trekking, kayaking and birdwatching.",
-            "es": "Laguna sagrada descubierta en 1912, perfecta para trekking, kayak y avistamiento de aves."
-        },
-        "long": {
-            "en": "Discovered in 1912, the lagoon was a sacred space for ancestral communities. Today, its natural beauty and calm make it perfect for disconnecting from the world and reconnecting with nature.\n\nEnjoy unspoiled nature and fresh air as you hike low and medium difficulty trekking trails. Relax in picnic areas, contemplate the landscape from natural viewpoints, or venture out on guided boat and kayak trips. Additionally, it is an excellent place for bird watching in its natural habitat.",
-            "es": "Descubierta en 1912, la laguna fue un espacio sagrado para comunidades ancestrales. Hoy, su belleza natural y calma la hacen perfecta para desconectar del mundo y reconectar con la naturaleza.\n\nDisfruta de naturaleza virgen y aire puro mientras recorres senderos de trekking de baja y media dificultad. Relájate en zonas de picnic, contempla el paisaje desde miradores naturales o aventúrate en paseos en bote y kayak guiados. Además, es un excelente lugar para la observación de aves en su hábitat natural."
-        },
-        "badges": {
-            "en": [
-                "Trekking",
-                "Picnic areas",
-                "Kayak",
-                "Boat rides",
-                "Birdwatching"
-            ],
-            "es": [
-                "Trekking",
-                "Zonas de picnic",
-                "Kayak",
-                "Paseos en bote",
-                "Avistamiento de aves"
-            ]
-        },
-        "address": "Cordillera de los Andes, Región del Biobío",
-        "coords": [
-            -37.315,
-            -71.421
-        ],
-        "infoSheet": null
-    },
-    {
         "id": "peninsula-hualpen",
         "name": {
             "en": "Hualpén Peninsula",
@@ -884,42 +844,6 @@
             -73.048
         ],
         "infoSheet": "assets/sheets/concepcion.pdf"
-    },
-    {
-        "id": "plaza-armas-concepcion",
-        "name": {
-            "en": "Plaza de Armas de Concepción",
-            "es": "Plaza de Armas de Concepción"
-        },
-        "cat": "heritage",
-        "subcat": "squares",
-        "img": "assets/img/destinations/plaza-armas-concepcion.avif",
-        "description": {
-            "en": "Main square of Concepción, civic heart with monuments and cultural activity.",
-            "es": "Main square of Concepción, civic heart with monuments and cultural activity."
-        },
-        "long": {
-            "en": "The Plaza de Armas of Concepción is the city’s civic heart, surrounded by important buildings such as the Cathedral and government offices. It has served as a historical meeting point for political, cultural, and social events throughout centuries. Today it combines green areas, monuments, and wide walkways, making it a space for both daily life and celebrations. Visitors can enjoy a peaceful walk, take photographs, or experience local cultural events often held in the square.",
-            "es": "The Plaza de Armas of Concepción is the city’s civic heart, surrounded by important buildings such as the Cathedral and government offices. It has served as a historical meeting point for political, cultural, and social events throughout centuries. Today it combines green areas, monuments, and wide walkways, making it a space for both daily life and celebrations. Visitors can enjoy a peaceful walk, take photographs, or experience local cultural events often held in the square."
-        },
-        "badges": {
-            "en": [
-                "Historic square",
-                "Monuments",
-                "Cultural events"
-            ],
-            "es": [
-                "Historic square",
-                "Monuments",
-                "Cultural events"
-            ]
-        },
-        "address": "Concepción",
-        "coords": [
-            -36.827,
-            -73.05
-        ],
-        "infoSheet": null
     },
     {
         "id": "plaza-acevedo",
@@ -1692,8 +1616,8 @@
     {
         "id": "plaza-armas-urban",
         "name": {
-            "en": "Plaza de Armas",
-            "es": "Plaza de Armas"
+            "en": "Plaza de la Independencia",
+            "es": "Plaza de la Independencia"
         },
         "cat": "urban",
         "subcat": "squares",

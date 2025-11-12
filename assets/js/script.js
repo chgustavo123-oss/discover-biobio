@@ -104,13 +104,6 @@
             }
             state.destinations = await response.json();
 
-            // Create a shuffled version for the 'All' view
-            state.shuffledDestinations = [...state.destinations];
-            // Fisher-Yates shuffle algorithm
-            for (let i = state.shuffledDestinations.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [state.shuffledDestinations[i], state.shuffledDestinations[j]] = [state.shuffledDestinations[j], state.shuffledDestinations[i]];
-            }
         } catch (error) {
             console.error("Could not fetch destinations:", error);
             const lang = state.currentLanguage;
@@ -344,8 +337,14 @@
 
     function applyFilters(category, subcategory, searchTerm) {
         const lang = state.currentLanguage;
-        // Start with the shuffled list for 'all', otherwise use the original for consistent category order
-        let results = (category === 'all') ? state.shuffledDestinations : state.destinations;
+        let results = [...state.destinations];
+
+        // Sort alphabetically by name based on the current language
+        results.sort((a, b) => {
+            const nameA = (a.name && a.name[lang]) || (a.name && a.name.en) || a.id;
+            const nameB = (b.name && b.name[lang]) || (b.name && b.name.en) || b.id;
+            return nameA.localeCompare(nameB, lang, { sensitivity: 'base' });
+        });
 
         // Filter by category
         if (category !== 'all') {
