@@ -1650,42 +1650,6 @@
         "infoSheet": null
     },
     {
-        "id": "parque-ecuador-urban",
-        "name": {
-            "en": "Parque Ecuador",
-            "es": "Parque Ecuador"
-        },
-        "cat": "urban",
-        "subcat": "squares",
-        "img": "assets/img/destinations/parque-ecuador.avif",
-        "description": {
-            "en": "Main green lung of Concepción, ideal for recreation and cultural events.",
-            "es": "Main green lung of Concepción, ideal for recreation and cultural events."
-        },
-        "long": {
-            "en": "Close to the center of the city you can find the main green lung of Concepción, stretching 1.34 km with inclusive accessibility. It is perfect for family recreation, cultural events, and connecting with nature.",
-            "es": "Close to the center of the city you can find the main green lung of Concepción, stretching 1.34 km with inclusive accessibility. It is perfect for family recreation, cultural events, and connecting with nature."
-        },
-        "badges": {
-            "en": [
-                "Recreation",
-                "Family friendly",
-                "Cultural events"
-            ],
-            "es": [
-                "Recreation",
-                "Family friendly",
-                "Cultural events"
-            ]
-        },
-        "address": "Víctor Lamas, Concepción",
-        "coords": [
-            -36.828,
-            -73.041
-        ],
-        "infoSheet": null
-    },
-    {
         "id": "tome-historic-center",
         "name": {
             "en": "Tomé Historic Center",
