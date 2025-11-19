@@ -1145,9 +1145,9 @@
         },
         "cat": "gastronomy",
         "subcat": "cafes",
-        "img": "assets/img/destinations/carmela-cafe.png",
+        "img": "assets/img/destinations/carmela-cafe.jpg",
         "description": {
-            "en": "Spacious café bar known for drinks, food and friendly service.",
+            "en": "Spacious café bar known for drinks, food and  friendly service.",
             "es": "Spacious café bar known for drinks, food and friendly service."
         },
         "long": {
@@ -1219,7 +1219,7 @@
         },
         "cat": "gastronomy",
         "subcat": "restaurants",
-        "img": "assets/img/destinations/inati-burger.avif",
+        "img": "assets/img/destinations/inati-burger.jpg",
         "description": {
             "en": "Burger house with daily specials, shakes and fries promotions.",
             "es": "Burger house with daily specials, shakes and fries promotions."
@@ -1327,7 +1327,7 @@
         },
         "cat": "gastronomy",
         "subcat": "bars",
-        "img": "assets/img/destinations/bar-margarita.png",
+        "img": "assets/img/destinations/bar-margarita.jpg",
         "description": {
             "en": "Bar with daily promotions, fast food and a friendly atmosphere.",
             "es": "Bar with daily promotions, fast food and a friendly atmosphere."
@@ -1363,7 +1363,7 @@
         },
         "cat": "gastronomy",
         "subcat": "bars",
-        "img": "assets/img/destinations/sky-bar.avif",
+        "img": "assets/img/destinations/sky-bar.jpg",
         "description": {
             "en": "20th floor bar with panoramic views, Peruvian fusion cuisine and cocktails.",
             "es": "20th floor bar with panoramic views, Peruvian fusion cuisine and cocktails."
@@ -1401,7 +1401,7 @@
         },
         "cat": "gastronomy",
         "subcat": "bars",
-        "img": "assets/img/destinations/travesia.png",
+        "img": "assets/img/destinations/travesia.jpg",
         "description": {
             "en": "Rustic bar with pizzas, sandwiches, tapas and generous portions.",
             "es": "Rustic bar with pizzas, sandwiches, tapas and generous portions."
@@ -1437,7 +1437,7 @@
         },
         "cat": "gastronomy",
         "subcat": "bars",
-        "img": "assets/img/destinations/bodeguita-nicanor.avif",
+        "img": "assets/img/destinations/bodeguita-nicanor.jpg",
         "description": {
             "en": "Nightlife locale with live music, cultural events and Chilean drinks.",
             "es": "Nightlife locale with live music, cultural events and Chilean drinks."
